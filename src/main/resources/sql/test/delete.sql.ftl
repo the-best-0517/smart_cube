@@ -1,0 +1,1 @@
+delete from t_lg_people where id= #{id};

@@ -1,0 +1,1 @@
+select * from t_lg_people where name= "lsc"
