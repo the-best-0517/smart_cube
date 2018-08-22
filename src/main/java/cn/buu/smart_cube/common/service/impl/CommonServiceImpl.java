@@ -16,16 +16,15 @@ import cn.buu.smart_cube.common.service.CommonService;
 public class CommonServiceImpl implements CommonService{
 	@Resource
 	private ExchangeDbService exchangeDbService;
-	public int getOnlyKey() {
-		int key = 0;
+	public long getOnlyKey() {
+		long key = 0;
 		try {
-			LscExchangeDb lsc = new LscExchangeDb();
-			//lsc.setData(data);
-			lsc.setSqlPath("test/getMySqlTime");
-			List<Map<String,Object>> list = exchangeDbService.selectDbNoParam(lsc);
-			Date sqldate = (Date) list.get(0).get("sqldate");
+			long l = System.currentTimeMillis();
+			//new日期对象
+			Date date = new Date(l);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
-			key = Integer.parseInt(sdf.format(sqldate))+(int)((Math.random()*9+1)*10000);
+			String k = sdf.format(date)+(int)((Math.random()*9+1)*1000)+"";
+			key = Long.parseLong(k);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

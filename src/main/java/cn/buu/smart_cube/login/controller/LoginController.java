@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.contoller.CommonController;
+import cn.buu.smart_cube.common.service.impl.CommonServiceImpl;
 import cn.buu.smart_cube.common.web.JsonResult;
 
 @Controller
@@ -20,7 +21,8 @@ import cn.buu.smart_cube.common.web.JsonResult;
 public class LoginController extends CommonController{
 	@Resource
 	private ExchangeDbService exchangeDbService;
-	
+	@Resource
+	private CommonServiceImpl commonServiceImpl;
 	/**
 	 * 查询所有用户名
 	 * @return
@@ -29,14 +31,34 @@ public class LoginController extends CommonController{
 	@ResponseBody
 	public JsonResult logon() {
 		System.out.println("findAllUserNAme");
-		hanldDiff();
-		Map<String,Object> map = new HashMap<String,Object>();
+		hanldDiff();         //处理跨域请求问题（继承CommController）
 		LscExchangeDb db = new LscExchangeDb();
-		db.setData(map);
 		db.setSqlPath("login/QryAllUserName");
 		List<Map<String, Object>> data = exchangeDbService.selectDb(db);
 		System.out.println("data:"+data);
 		return new JsonResult(data);
 		
+	}
+	
+	@RequestMapping("/saveUser")
+	@ResponseBody
+	public JsonResult savaUser(String userName,String pwd,String phone) {
+		System.out.println("savaUser");
+		hanldDiff();
+		long userId = commonServiceImpl.getOnlyKey();  //年月日时分秒+五位随机数
+		Map<String,Object> data = new HashMap<String, Object>();
+		data.put("userName", userName);
+		data.put("userId", userId);
+		data.put("pwd",pwd);
+		data.put("phone",phone);
+		LscExchangeDb db = new LscExchangeDb();
+		db.setSqlPath("login/saveUser");
+		db.setData(data);
+		try {
+			int rows = exchangeDbService.saveDb(db);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return new JsonResult();		
 	}
 }
