@@ -7,10 +7,12 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.stereotype.Service;
+
 import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.service.CommonService;
-
+@Service
 public class CommonServiceImpl implements CommonService{
 	@Resource
 	private ExchangeDbService exchangeDbService;

@@ -1,0 +1,1 @@
+select user_name as userName from t_user

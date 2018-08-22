@@ -5,12 +5,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 
-import cn.buu.smart_cube.common.service.CommonService;
+import cn.buu.smart_cube.common.service.impl.CommonServiceImpl;
 
 @Controller
 public class CommonController {
-	@Resource
-	private CommonService commonService;
+	//@Resource
+//	private CommonServiceImpl commonService;
 	@Resource
 	private HttpServletResponse response;
 	/*@Resource
@@ -28,7 +28,7 @@ public class CommonController {
 	 * 获取数据库时间+五位随机数
 	 * @return
 	 */
-	public int getOnlyKey() {
+/*	public int getOnlyKey() {
 		int key = 0;
 		try {
 			key = commonService.getOnlyKey();
@@ -37,7 +37,7 @@ public class CommonController {
 		}
 		return key;		
 	}
-	
+	*/
 		/**
 		 * 处理跨域请求的问题
 		 */

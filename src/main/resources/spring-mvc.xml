@@ -22,7 +22,8 @@
      3)controller(@Controller)
      4).....
      -->
-    <context:component-scan base-package="cn.buu.smart_cube" />
+    <context:component-scan base-package="cn.buu" />
+
     <!-- spring mvc 注解及类型转换 -->
     <mvc:annotation-driven conversion-service="conversionService" />
     <bean id="conversionService"
