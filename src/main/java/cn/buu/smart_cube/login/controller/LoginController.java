@@ -51,14 +51,40 @@ public class LoginController extends CommonController{
 		data.put("userId", userId);
 		data.put("pwd",pwd);
 		data.put("phone",phone);
+		data.put("roleId","normal");
 		LscExchangeDb db = new LscExchangeDb();
 		db.setSqlPath("login/saveUser");
 		db.setData(data);
+		
 		try {
 			int rows = exchangeDbService.saveDb(db);
+			//½ÇÉ«±í
+			db.setSqlPath("login/saveUsertoRole");
+			exchangeDbService.saveDb(db);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return new JsonResult();		
+	}
+	
+	@RequestMapping("/login")
+	@ResponseBody
+	public JsonResult login(String name,String pwd) {
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String,Object>();
+		data.put("userName",name);
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("login/checkPwdByUserName");
+		List<Map<String,Object>> list = exchangeDbService.selectDb(lsc);
+		if(list.size()==0) {
+			return new JsonResult("error");
+		}
+		Object truepwd = list.get(0).get("pwd");
+		if(pwd.equals(truepwd)) {
+			return new JsonResult();
+		}else {
+			return new JsonResult("error");
+		}
 	}
 }

@@ -1,17 +1,17 @@
 package cn.buu.smart_cube.common.web;
 /**
- * 通过此对象封装控制层返回的结果
+ * 閫氳繃姝ゅ璞″皝瑁呮帶鍒跺眰杩斿洖鐨勭粨鏋�
  * @author ABC
  *
  */
 public class JsonResult {
 	public static final int SUCCESS = 1;
 	public static final int ERROR = 0;
-	 /**状态*/
+	 /**鐘舵��*/
      private int  state;
-     /**信息*/
+     /**淇℃伅*/
      private String message;
-     /**具体业务数据*/
+     /**鍏蜂綋涓氬姟鏁版嵁*/
      private Object data;
      public JsonResult() {
     	 this.state = SUCCESS;
@@ -26,6 +26,10 @@ public class JsonResult {
      public JsonResult(Throwable e) {
     	 this.state = ERROR;
     	 this.message = e.getMessage();
+     }
+     public JsonResult(String  str) {
+    	 this.state = ERROR;
+    	 this.message = str;
      }
      
 	public int getState() {
