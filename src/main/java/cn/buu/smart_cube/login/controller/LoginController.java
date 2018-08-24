@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,7 +70,7 @@ public class LoginController extends CommonController{
 	
 	@RequestMapping("/login")
 	@ResponseBody
-	public JsonResult login(String name,String pwd) {
+	public JsonResult login(String name,String pwd,HttpSession session) {
 		hanldDiff();
 		Map<String,Object> data = new HashMap<String,Object>();
 		data.put("userName",name);
@@ -82,6 +83,13 @@ public class LoginController extends CommonController{
 		}
 		Object truepwd = list.get(0).get("pwd");
 		if(pwd.equals(truepwd)) {
+			/**通过userName查询userId*/
+			lsc.setSqlPath("login/QryUserIdByUserName");
+			List<Map<String,Object>> list1 = exchangeDbService.selectDb(lsc);
+			if(list1.size()>0) {
+				Object userId = list1.get(0).get("userId");
+				session.setAttribute("userId", userId);//绑定到session中
+			}
 			return new JsonResult();
 		}else {
 			return new JsonResult("error");
