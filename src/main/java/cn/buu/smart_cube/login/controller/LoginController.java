@@ -16,6 +16,7 @@ import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.contoller.CommonController;
 import cn.buu.smart_cube.common.service.impl.CommonServiceImpl;
 import cn.buu.smart_cube.common.web.JsonResult;
+import cn.buu.smart_cube.login.entity.User;
 
 @Controller
 @RequestMapping("/login")
@@ -25,14 +26,14 @@ public class LoginController extends CommonController{
 	@Resource
 	private CommonServiceImpl commonServiceImpl;
 	/**
-	 * ²éÑ¯ËùÓĞÓÃ»§Ãû
+	 * ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½
 	 * @return
 	 */
 	@RequestMapping("/logon")
 	@ResponseBody
 	public JsonResult logon() {
 		System.out.println("findAllUserNAme");
-		hanldDiff();         //´¦Àí¿çÓòÇëÇóÎÊÌâ£¨¼Ì³ĞCommController£©
+		hanldDiff();         //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â£¨ï¿½Ì³ï¿½CommControllerï¿½ï¿½
 		LscExchangeDb db = new LscExchangeDb();
 		db.setSqlPath("login/QryAllUserName");
 		List<Map<String, Object>> data = exchangeDbService.selectDb(db);
@@ -46,7 +47,7 @@ public class LoginController extends CommonController{
 	public JsonResult savaUser(String userName,String pwd,String phone) {
 		System.out.println("savaUser");
 		hanldDiff();
-		long userId = commonServiceImpl.getOnlyKey();  //ÄêÔÂÈÕÊ±·ÖÃë+ÎåÎ»Ëæ»úÊı
+		long userId = commonServiceImpl.getOnlyKey();  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½+ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½
 		Map<String,Object> data = new HashMap<String, Object>();
 		data.put("userName", userName);
 		data.put("userId", userId);
@@ -59,7 +60,7 @@ public class LoginController extends CommonController{
 		
 		try {
 			int rows = exchangeDbService.saveDb(db);
-			//½ÇÉ«±í
+			//ï¿½ï¿½É«ï¿½ï¿½
 			db.setSqlPath("login/saveUsertoRole");
 			exchangeDbService.saveDb(db);
 		}catch(Exception e) {
@@ -83,16 +84,63 @@ public class LoginController extends CommonController{
 		}
 		Object truepwd = list.get(0).get("pwd");
 		if(pwd.equals(truepwd)) {
-			/**Í¨¹ıuserName²éÑ¯userId*/
+			/**Í¨ï¿½ï¿½userNameï¿½ï¿½Ñ¯userId*/
 			lsc.setSqlPath("login/QryUserIdByUserName");
 			List<Map<String,Object>> list1 = exchangeDbService.selectDb(lsc);
 			if(list1.size()>0) {
 				Object userId = list1.get(0).get("userId");
-				session.setAttribute("userId", userId);//°ó¶¨µ½sessionÖĞ
+				session.setAttribute("userId", userId);//ï¿½ó¶¨µï¿½sessionï¿½ï¿½
 			}
 			return new JsonResult();
 		}else {
 			return new JsonResult("error");
 		}
+	}
+	
+	/**
+	 * æŸ¥è¯¢ä¸ªäººåŸºæœ¬ä¿¡æ¯
+	 * @return
+	 */
+	@RequestMapping("/showPersonMsg")
+	@ResponseBody
+	public JsonResult showPersonMsg(String userId) {
+		System.out.println("showPersonMsg");
+		hanldDiff();
+		List<Map<String,Object>> list = null;
+		Map<String,Object> data = new HashMap<String, Object>();
+		data.put("userId",userId);
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setSqlPath("login/QryPersonMsgByUserId");
+		lsc.setData(data);
+		try {
+			list = exchangeDbService.selectDb(lsc);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return new JsonResult(list);
+	}
+	
+	@RequestMapping("/savePersonMsg")
+	@ResponseBody
+	public JsonResult savePersonMsg(User user,HttpSession session) {
+		System.out.println("savePersonMsg");
+		hanldDiff();
+		Object userId = session.getAttribute("userId");
+		Map<String,Object> data = new HashMap<String, Object>();
+		data.put("userName",user.getUserName());
+		data.put("phone",user.getPhone());
+		data.put("breakfast",user.getBreakfast());
+		data.put("lunch",user.getLunch());
+		data.put("dinner",user.getDinner());
+		data.put("userId",userId);
+		LscExchangeDb lsc  = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("login/updatePersonMsg");
+		try {
+			exchangeDbService.saveDb(lsc);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return new JsonResult();
 	}
 }
