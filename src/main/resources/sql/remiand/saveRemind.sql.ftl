@@ -4,6 +4,7 @@ remind_id,
 user_id,
 pill_id,
 box_id,
+pill_desc,
 remind_time,
 is_eating,
 is_delete,
@@ -16,6 +17,7 @@ update_time
 #{userId},
 #{pillId},
 #{boxId},
+#{pillDesc},
 #{remindTime},
 0,0,#{dose},now(),now()
 )

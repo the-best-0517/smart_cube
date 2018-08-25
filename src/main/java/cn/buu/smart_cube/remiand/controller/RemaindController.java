@@ -61,11 +61,12 @@ public class RemaindController extends CommonController{
 	 */
 	@RequestMapping("/addPills")
 	@ResponseBody
-	public JsonResult addPills(String boxId) {
+	public JsonResult addPills(String remindTime,String boxId) {
 		System.out.println("addPills");
 		hanldDiff();
 		List<Map<String,Object>> list = null;
 		Map<String,Object> data = new HashMap<String, Object>();
+		data.put("remindTime",remindTime);
 		data.put("boxId",boxId);
 		LscExchangeDb lsc = new LscExchangeDb();
 		lsc.setSqlPath("remiand/QryPillsByBoxId");
@@ -109,15 +110,10 @@ public class RemaindController extends CommonController{
 	 */
 	@RequestMapping("/makeRemiandBypills")
 	@ResponseBody
-	public JsonResult makeRemiandBypills(@RequestBody String jsonPills) throws UnsupportedEncodingException {
+	public JsonResult makeRemiandBypills(@RequestBody String jsonPills,HttpSession session) throws UnsupportedEncodingException {
 		hanldDiff();
 		jsonPills = java.net.URLDecoder.decode(jsonPills,"UTF-8");
-
 		System.out.println("makeRemiandBypills:"+jsonPills);
-//		
-//		jsonPills = jsonPills.replaceAll("jsonPills%5B", "");
-//		jsonPills = jsonPills.replaceAll("%5D", "");
-//		System.out.println("makeRemiandBypills:"+jsonPills);
 		List<String> list = new ArrayList<String>();
 		List<Map<String,String>> l = new ArrayList<Map<String,String>>();
 		String[] jsons = jsonPills.split("&");
@@ -141,7 +137,7 @@ public class RemaindController extends CommonController{
 		}
 		System.out.println("l:"+l);
 		/**根据药品信息生成提醒事项*/
-		makeRemiandBypills(l);
+		makeRemiandBypills(l,session);
 		return new JsonResult();		
 	}
 	/**
@@ -149,7 +145,7 @@ public class RemaindController extends CommonController{
 	 * @param list
 	 */
 	List<Map<String,Object>> remiandList = new ArrayList<Map<String, Object>>();
-	private void makeRemiandBypills(List<Map<String, String>> list) {		
+	private void makeRemiandBypills(List<Map<String, String>> list,HttpSession session) {		
 		for(int i=0;i<list.size();i++) {
 			/**获取一天的次数  times   每顿的个数  dose*/
 			String instructions = list.get(i).get("instructions");
@@ -158,13 +154,14 @@ public class RemaindController extends CommonController{
 				whereEating = "饭后";
 			}
 			String pillDesc = list.get(i).get("pillDesc");
+			
 			/**通过药品名查找药品id*/
 			List<Map<String,Object>> pillIdList = null;
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("pillDesc", pillDesc);
 			LscExchangeDb lsc = new LscExchangeDb();
 			lsc.setData(map);
-			lsc.setSqlPath("remaind/QryPillIdByPillDesc");
+			lsc.setSqlPath("remiand/QryPillIdByPillDesc");
 			try {
 				pillIdList = exchangeDbService.selectDb(lsc);
 			}catch(Exception e) {
@@ -224,23 +221,35 @@ public class RemaindController extends CommonController{
 			default:  otherPlan();
 			}
 			//生成list记录
-			/*未来可以有选择添加几天的*/
-			Map<String,Object> data = new HashMap<String, Object>();
-			data.put("userId",session.getAttribute("userId"));
-			data.put("pillId",pillIdList.get(0).get("pillId"));		
-			data.put("dose", dose);
-			for(int k=0;k<remaindTime.size();k++) {
-				long remainId = commonService.getOnlyKey();
-				data.put("remaindId", remainId);
+			/*未来可以有选择添加几天的*/			
+			for(int k=0;k<remaindTime.size();k++) {				
+				Map<String,Object> data = new HashMap<String, Object>();
+				Object userId = session.getAttribute("userId");
+				if(userId!=null) {
+					data.put("userId",userId);
+				}else {
+					data.put("userId", 123);
+				}
+				if(pillIdList.size()>0) {
+					data.put("pillId",pillIdList.get(0).get("pillId"));	
+				}else {
+					data.put("pillId", "");
+				}				
+				data.put("dose", dose);
+				data.put("pillDesc",pillDesc);//绑定药品描述
+				
+				data.put("remindTime", remaindTime.get(k)); //提醒时间
+				long remindId = commonService.getOnlyKey();
+				data.put("remindId", remindId);
 				/**通过时间 在remaindList中找到相同时间的盒id*/
 				String rt = remaindTime.get(k);
-				for(int m=0;m<remiandList.size();i++) {
+				for(int m=0;m<remiandList.size();m++) {
 					if(rt.equals(remiandList.get(m).get("remindTime"))) {
 						data.put("boxId",remiandList.get(m).get("boxId"));
 						break;
 					}
 				}
-				if("".equals(data.get("boxId"))) {
+				if(data.get("boxId")==null) {
 					data.put("boxId", 1);              //未来会有判断	(判断那个盒子是空的)
 				}			
 				remiandList.add(data);
@@ -248,6 +257,7 @@ public class RemaindController extends CommonController{
 			
 		}
 		/**保存记录到记录表*/
+		System.out.println("remiandLIst:"+remiandList);
 		LscExchangeDb lsc = new LscExchangeDb();
 		lsc.setSqlPath("remiand/saveRemind");
 		for(int i=0;i<remiandList.size();i++) {			
