@@ -222,7 +222,7 @@ public class RemaindController extends CommonController{
 			}
 			//生成list记录
 			/*未来可以有选择添加几天的*/			
-			for(int k=0;k<remaindTime.size();k++) {				
+			for(int k=0;k<remaindTime.size();k++) {		
 				Map<String,Object> data = new HashMap<String, Object>();
 				Object userId = session.getAttribute("userId");
 				if(userId!=null) {
@@ -233,7 +233,7 @@ public class RemaindController extends CommonController{
 				if(pillIdList.size()>0) {
 					data.put("pillId",pillIdList.get(0).get("pillId"));	
 				}else {
-					data.put("pillId", "");
+					data.put("pillId", "00000");
 				}				
 				data.put("dose", dose);
 				data.put("pillDesc",pillDesc);//绑定药品描述
@@ -264,6 +264,12 @@ public class RemaindController extends CommonController{
 			lsc.setData(remiandList.get(i));
 			try {
 				exchangeDbService.saveDb(lsc);
+				/**添加定时提醒任务*/
+				try {
+					commonService.TimerRemindTask(remiandList.get(i).get("remindTime"),0);
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
