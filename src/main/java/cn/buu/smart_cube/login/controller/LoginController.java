@@ -138,9 +138,11 @@ public class LoginController extends CommonController{
 		lsc.setSqlPath("login/updatePersonMsg");
 		try {
 			exchangeDbService.saveDb(lsc);
+			return new JsonResult();
 		}catch(Exception e) {
 			e.printStackTrace();
+			return new JsonResult(e);
 		}
-		return new JsonResult();
+		
 	}
 }
