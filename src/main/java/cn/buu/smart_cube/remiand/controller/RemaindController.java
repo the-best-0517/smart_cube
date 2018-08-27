@@ -1,7 +1,10 @@
 package cn.buu.smart_cube.remiand.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,10 +100,12 @@ public class RemaindController extends CommonController{
 		lsc.setData(data);
 		try {
 			list = exchangeDbService.selectDb(lsc);
+			return new JsonResult(list);
 		}catch(Exception e) {
 			e.printStackTrace();
+			return new JsonResult(e);
 		}
-		return new JsonResult(list);		
+				
 	}
 	/**
 	 * 解析药品数据（用于提醒）
@@ -177,45 +182,52 @@ public class RemaindController extends CommonController{
 			int dose = Integer.parseInt(s[1].substring(start+1, s[1].length()-1));
 			System.out.println("dose:"+dose);
 			/**分类讨论设置时间*/
+			Date date = new Date();
+		 	Calendar calendar = Calendar.getInstance();
+	        calendar.setTime(date);
+	        calendar.add(Calendar.DAY_OF_MONTH, +1);//+1今天的时间加一天
+	        date = calendar.getTime();
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	        String tomrrow = sdf.format(date);
 			/*未来：
 			 *  拿到设定的吃饭时间
-			 * */
+			 * */				
 			List<String> remaindTime = new ArrayList<String>();
 			switch(times) {
 			case 1: if(whereEating.equals("空腹")||whereEating.equals("饭前")) {
-						remaindTime.add("7:30");
+						remaindTime.add(tomrrow+" 7:30");
 					}else if(whereEating.equals("饭后")) {
-						remaindTime.add("8:30");
+						remaindTime.add(tomrrow+" 8:30");
 					}
 			break;
 			case 2:if(whereEating.equals("饭前")) {
-						remaindTime.add("7:30");
-						remaindTime.add("17:30");
+						remaindTime.add(tomrrow+" 7:30");
+						remaindTime.add(tomrrow+" 17:30");
 					}else if(whereEating.equals("饭后")) {
-						remaindTime.add("8:30");
-						remaindTime.add("18:30");
+						remaindTime.add(tomrrow+" 8:30");
+						remaindTime.add(tomrrow+" 18:30");
 					}
 			break;
 			case 3:if(whereEating.equals("饭前")) {
-						remaindTime.add("7:30");
-						remaindTime.add("11:30");
-						remaindTime.add("17:30");
+						remaindTime.add(tomrrow+" 7:30");
+						remaindTime.add(tomrrow+" 11:30");
+						remaindTime.add(tomrrow+" 17:30");
 					}else if(whereEating.equals("饭后")) {
-						remaindTime.add("8:30");
-						remaindTime.add("12:30");
-						remaindTime.add("18:30");
+						remaindTime.add(tomrrow+" 8:30");
+						remaindTime.add(tomrrow+" 12:30");
+						remaindTime.add(tomrrow+" 18:30");
 					}
 			break;
 			case 4:if(whereEating.equals("饭前")) {
-						remaindTime.add("7:30");
-						remaindTime.add("11:30");
-						remaindTime.add("15:30");
-						remaindTime.add("18:30");
+						remaindTime.add(tomrrow+" 7:30");
+						remaindTime.add(tomrrow+" 11:30");
+						remaindTime.add(tomrrow+" 15:30");
+						remaindTime.add(tomrrow+" 18:30");
 				   }else if(whereEating.equals("饭后")){
-					   	remaindTime.add("7:30");
-						remaindTime.add("11:30");
-						remaindTime.add("15:30");
-						remaindTime.add("18:30");
+					   	remaindTime.add(tomrrow+" 7:30");
+						remaindTime.add(tomrrow+" 11:30");
+						remaindTime.add(tomrrow+" 15:30");
+						remaindTime.add(tomrrow+" 18:30");
 				   }
 			break;
 			default:  otherPlan();
