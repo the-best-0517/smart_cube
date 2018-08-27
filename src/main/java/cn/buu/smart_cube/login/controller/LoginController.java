@@ -72,6 +72,7 @@ public class LoginController extends CommonController{
 	@RequestMapping("/login")
 	@ResponseBody
 	public JsonResult login(String name,String pwd,HttpSession session) {
+		System.out.println("login");
 		hanldDiff();
 		Map<String,Object> data = new HashMap<String,Object>();
 		data.put("userName",name);
