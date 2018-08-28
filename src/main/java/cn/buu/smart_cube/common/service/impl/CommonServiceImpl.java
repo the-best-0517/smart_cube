@@ -2,6 +2,8 @@ package cn.buu.smart_cube.common.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -9,6 +11,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.service.CommonService;
 @Service
@@ -41,7 +44,14 @@ public class CommonServiceImpl implements CommonService{
 		TimerTask task = new TimerTask() {
 			@Override
 			public void run() {
-				System.out.println("提醒");
+				String msg = "O01101010000";
+				System.out.println("提醒:");
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("msg", msg);
+				LscExchangeDb lsc = new LscExchangeDb();
+				lsc.setData(map);
+				lsc.setSqlPath("test/updateMsg");
+				exchangeDbService.saveDb(lsc);
 				timer.cancel();
 			}			
 		};

@@ -25,6 +25,24 @@ public class LoginController extends CommonController{
 	private ExchangeDbService exchangeDbService;
 	@Resource
 	private CommonServiceImpl commonServiceImpl;
+	
+	
+	
+	
+	
+	
+	@RequestMapping("/pull")
+	@ResponseBody
+	public JsonResult pull() {
+		System.out.println("findAllUserNAme");
+		hanldDiff();         
+		LscExchangeDb db = new LscExchangeDb();
+		db.setSqlPath("test/QryMsg");
+		List<Map<String, Object>> data = exchangeDbService.selectDb(db);
+		System.out.println("data:"+data);
+		return new JsonResult(data);
+		
+	}
 	/**
 	 * ��ѯ�����û���
 	 * @return

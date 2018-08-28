@@ -11,7 +11,7 @@ create_time,
 update_time
 	
 )values(
-	123,
+	#{userId},
 	#{name},
 	#{sex},
 	#{birthday},
