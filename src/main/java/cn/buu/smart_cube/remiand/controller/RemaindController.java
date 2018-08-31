@@ -119,6 +119,7 @@ public class RemaindController extends CommonController{
 		hanldDiff();
 		jsonPills = java.net.URLDecoder.decode(jsonPills,"UTF-8");
 		System.out.println("makeRemiandBypills:"+jsonPills);
+		
 		List<String> list = new ArrayList<String>();
 		List<Map<String,String>> l = new ArrayList<Map<String,String>>();
 		String[] jsons = jsonPills.split("&");
@@ -185,7 +186,7 @@ public class RemaindController extends CommonController{
 			Date date = new Date();
 		 	Calendar calendar = Calendar.getInstance();
 	        calendar.setTime(date);
-	        calendar.add(Calendar.DAY_OF_MONTH, +1);//+1今天的时间加一天
+	     //   calendar.add(Calendar.DAY_OF_MONTH, +1);//+1今天的时间加一天
 	        date = calendar.getTime();
 	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	        String tomrrow = sdf.format(date);
@@ -263,8 +264,12 @@ public class RemaindController extends CommonController{
 				}
 				if(data.get("boxId")==null) {
 					data.put("boxId", 1);              //未来会有判断	(判断那个盒子是空的)
-				}			
-				remiandList.add(data);
+				}
+				date = new Date();
+				String nowDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:DD").format(date);
+				if(remaindTime.get(k).toString().compareTo(nowDate)>=0) {
+					remiandList.add(data);
+				}
 			}
 			
 		}
