@@ -164,4 +164,13 @@ public class LoginController extends CommonController{
 		}
 		
 	}
+	 @RequestMapping("/testaa")
+	 @ResponseBody 
+	 public JsonResult pictureUpload (String imageBase64) {
+	  hanldDiff();
+	  System.out.println("pictureUpload");
+	  System.out.println("imageBase64:"+imageBase64);
+	  return new JsonResult();
+	  
+	 }
 }
