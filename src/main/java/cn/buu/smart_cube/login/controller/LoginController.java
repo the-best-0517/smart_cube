@@ -1,5 +1,9 @@
 package cn.buu.smart_cube.login.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.contoller.CommonController;
+import cn.buu.smart_cube.common.entity.AppPush;
 import cn.buu.smart_cube.common.service.impl.CommonServiceImpl;
 import cn.buu.smart_cube.common.web.JsonResult;
 import cn.buu.smart_cube.login.entity.User;
@@ -33,9 +38,12 @@ public class LoginController extends CommonController{
 	
 	@RequestMapping("/pull")
 	@ResponseBody
-	public JsonResult pull() {
-		System.out.println("findAllUserNAme");
-		hanldDiff();         
+	public JsonResult pull() throws IOException {
+		System.out.println("pull");
+		hanldDiff();        
+		AppPush app = new AppPush();
+		app.appPush();
+		System.out.println("pushok");
 		LscExchangeDb db = new LscExchangeDb();
 		db.setSqlPath("test/QryMsg");
 		List<Map<String, Object>> data = exchangeDbService.selectDb(db);
@@ -166,11 +174,24 @@ public class LoginController extends CommonController{
 	}
 	 @RequestMapping("/testaa")
 	 @ResponseBody 
-	 public JsonResult pictureUpload (String imageBase64) {
+	 public JsonResult pictureUpload (String imageBase64,HttpSession session) {
 	  hanldDiff();
 	  System.out.println("pictureUpload");
 	  System.out.println("imageBase64:"+imageBase64);
-	  return new JsonResult();
-	  
+	  imageBase64 = imageBase64.replaceAll("data:image/png;base64,", "");
+	  System.out.println("imageBase640.0:"+imageBase64);
+	  try {
+		  Date date = new Date();
+		  SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
+		  String userId =session.getAttribute("userId").toString();
+		  int s =(int)(Math.random()*99+1);
+		  String path = "root"+File.separator+userId+File.separator+sdf.format(date)+s;
+		  System.out.println("path:"+path);
+		  commonServiceImpl.generateImage(imageBase64, path); 
+		  return new JsonResult();
+	  }catch(Exception e) {
+		  e.printStackTrace();
+		  return new JsonResult("error");
+	  }
 	 }
 }

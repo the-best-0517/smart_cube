@@ -1,5 +1,7 @@
 package cn.buu.smart_cube.common.service.impl;
 
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,10 +16,48 @@ import org.springframework.stereotype.Service;
 import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.service.CommonService;
+import sun.misc.BASE64Decoder;
 @Service
 public class CommonServiceImpl implements CommonService{
 	@Resource
 	private ExchangeDbService exchangeDbService;
+	
+	
+	/**
+	 * @Description: 将base64编码字符串转换为图片
+	 * @Author: 
+	 * @CreateTime: 
+	 * @param imgStr base64编码字符串
+	 * @param path 图片路径-具体到文件
+	 * @return
+	*/
+	public boolean generateImage(String imgStr,String path) {
+		if(imgStr==null) {
+			return false;
+		}
+		BASE64Decoder decoder = new BASE64Decoder();
+		try {
+			//解密
+			byte[] b = decoder.decodeBuffer(imgStr);
+			for(int i=0;i<b.length;i++) {
+				if(b[i]<0) {
+					b[i] += 256;
+				}
+			}
+				OutputStream os = new FileOutputStream(path);
+				os.write(b);
+				os.flush();
+				os.close();
+				return true;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * 流水号
+	 */
 	public long getOnlyKey() {
 		long key = 0;
 		try {
