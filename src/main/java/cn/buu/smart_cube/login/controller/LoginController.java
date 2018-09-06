@@ -185,7 +185,8 @@ public class LoginController extends CommonController{
 		  SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 		  String userId =session.getAttribute("userId").toString();
 		  int s =(int)(Math.random()*99+1);
-		  String path = "root"+File.separator+userId+File.separator+sdf.format(date)+s;
+		  String path = "/www/server/apache-tomcat-default/webapps/smart_cube/file/img/"+sdf.format(date)+s+".png";
+		 // String path = "/root"+File.separator+"smart_cube_file"+File.separator+"img"+File.separator+sdf.format(date)+s+".png";
 		  System.out.println("path:"+path);
 		  commonServiceImpl.generateImage(imageBase64, path); 
 		  return new JsonResult();
