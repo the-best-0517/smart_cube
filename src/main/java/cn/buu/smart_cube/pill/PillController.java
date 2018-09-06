@@ -55,7 +55,11 @@ public class PillController extends CommonController{
 		List<Map<String,Object>> list = null;
 		Map<String,Object> data = new HashMap<String, Object>();
 		Object userId = session.getAttribute("userId");
-		data.put("userId",userId);
+		if(userId==null) {
+			data.put("userId",123);
+		}else {
+			data.put("userId",userId);
+		}	
 		data.put("pillId", pillId);
 		LscExchangeDb lsc = new LscExchangeDb();
 		lsc.setData(data);
