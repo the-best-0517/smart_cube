@@ -139,11 +139,12 @@ public class LoginController extends CommonController{
 	 */
 	@RequestMapping("/showPersonMsg")
 	@ResponseBody
-	public JsonResult showPersonMsg(String userId) {
+	public JsonResult showPersonMsg(HttpSession session) {
 		System.out.println("showPersonMsg");
 		hanldDiff();
 		List<Map<String,Object>> list = null;
 		Map<String,Object> data = new HashMap<String, Object>();
+		Object userId = session.getAttribute("userId");
 		data.put("userId",userId);
 		LscExchangeDb lsc = new LscExchangeDb();
 		lsc.setSqlPath("login/QryPersonMsgByUserId");
