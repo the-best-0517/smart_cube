@@ -1,6 +1,7 @@
 package cn.buu.smart_cube.remiand.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,6 +33,32 @@ public class RemaindController extends CommonController{
 	private CommonService commonService;
 	@Resource
 	private HttpSession session;
+	
+	/**
+	 * 保存编辑信息
+	 */
+	@RequestMapping("/saveRemindEdit")
+	@ResponseBody
+	public JsonResult saveRemindEdit(String remindId,String remindEdit,String remindBox) {
+		System.out.println("saveRemindEdit");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String, Object>();
+		data.put("remindId", remindId);
+		data.put("remindEdit", remindEdit);
+		remindBox = remindBox.replaceAll("号盒", "");
+		data.put("remindBox", remindBox);
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("remiand/updateRemindMsg");
+		try {
+			exchangeDbService.saveDb(lsc);
+			return new JsonResult();	
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new JsonResult("error");	
+		}
+	}
+	
 	/**
 	 * ��ѯ���п�������
 	 * @param session
@@ -39,12 +66,21 @@ public class RemaindController extends CommonController{
 	 */
 	@RequestMapping("/showRemaind")
 	@ResponseBody
-	public JsonResult showRemaind(HttpSession session) {
+	public JsonResult showRemaind(HttpSession session,String phone) {
 		System.out.println("showRemaind");
 		hanldDiff();
 		Map<String,Object> data = new HashMap<String, Object>();
 		List<Map<String,Object>> list = null;
 		data.put("userId",session.getAttribute("userId"));
+		if(!"".equals(phone)) {
+			data.put("phone", phone);
+			//通过电话号码查询userId
+			LscExchangeDb lsc = new LscExchangeDb();
+			lsc.setData(data);
+			lsc.setSqlPath("remiand/QryUserIdByPhone");
+			list = exchangeDbService.selectDb(lsc);
+			data.put("userId",list.get(0).get("userId"));
+		}		
 		LscExchangeDb lsc = new LscExchangeDb();
 		lsc.setSqlPath("remiand/QryAllRemaind");
 		lsc.setData(data);
@@ -112,10 +148,11 @@ public class RemaindController extends CommonController{
 	 * @param jsonPills
 	 * @return
 	 * @throws UnsupportedEncodingException
+	 * @throws ParseException 
 	 */
 	@RequestMapping("/makeRemiandBypills")
 	@ResponseBody
-	public JsonResult makeRemiandBypills(@RequestBody String jsonPills,HttpSession session) throws UnsupportedEncodingException {
+	public JsonResult makeRemiandBypills(@RequestBody String jsonPills,HttpSession session,String phone,String times) throws UnsupportedEncodingException, ParseException {
 		hanldDiff();
 		jsonPills = java.net.URLDecoder.decode(jsonPills,"UTF-8");
 		System.out.println("makeRemiandBypills:"+jsonPills);
@@ -143,7 +180,10 @@ public class RemaindController extends CommonController{
 		}
 		System.out.println("l:"+l);
 		/**根据药品信息生成提醒事项*/
-		makeRemiandBypills(l,session);
+		for(int i=0;i<Integer.parseInt(times);i++) {
+			makeRemiandBypills(l,session,phone,i);
+		}
+		
 		return new JsonResult();		
 	}
 	/**
@@ -151,7 +191,7 @@ public class RemaindController extends CommonController{
 	 * @param list
 	 */
 	List<Map<String,Object>> remiandList = new ArrayList<Map<String, Object>>();
-	private void makeRemiandBypills(List<Map<String, String>> list,HttpSession session) {		
+	private void makeRemiandBypills(List<Map<String, String>> list,HttpSession session,String phone,int time) throws ParseException {		
 		for(int i=0;i<list.size();i++) {
 			/**获取一天的次数  times   每顿的个数  dose*/
 			String instructions = list.get(i).get("instructions");
@@ -186,7 +226,8 @@ public class RemaindController extends CommonController{
 			Date date = new Date();
 		 	Calendar calendar = Calendar.getInstance();
 	        calendar.setTime(date);
-	     //   calendar.add(Calendar.DAY_OF_MONTH, +1);//+1今天的时间加一天
+	        calendar.add(Calendar.DAY_OF_MONTH, +time);//+1今天的时间加一天
+	        time++;
 	        date = calendar.getTime();
 	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	        String tomrrow = sdf.format(date);
@@ -196,36 +237,36 @@ public class RemaindController extends CommonController{
 			List<String> remaindTime = new ArrayList<String>();
 			switch(times) {
 			case 1: if(whereEating.equals("空腹")||whereEating.equals("饭前")) {
-						remaindTime.add(tomrrow+" 7:30");
+						remaindTime.add(tomrrow+" 07:30");
 					}else if(whereEating.equals("饭后")) {
-						remaindTime.add(tomrrow+" 8:30");
+						remaindTime.add(tomrrow+" 08:30");
 					}
 			break;
 			case 2:if(whereEating.equals("饭前")) {
-						remaindTime.add(tomrrow+" 7:30");
+						remaindTime.add(tomrrow+" 07:30");
 						remaindTime.add(tomrrow+" 17:30");
 					}else if(whereEating.equals("饭后")) {
-						remaindTime.add(tomrrow+" 8:30");
+						remaindTime.add(tomrrow+" 08:30");
 						remaindTime.add(tomrrow+" 18:30");
 					}
 			break;
 			case 3:if(whereEating.equals("饭前")) {
-						remaindTime.add(tomrrow+" 7:30");
+						remaindTime.add(tomrrow+" 07:30");
 						remaindTime.add(tomrrow+" 11:30");
 						remaindTime.add(tomrrow+" 17:30");
 					}else if(whereEating.equals("饭后")) {
-						remaindTime.add(tomrrow+" 8:30");
+						remaindTime.add(tomrrow+" 08:30");
 						remaindTime.add(tomrrow+" 12:30");
 						remaindTime.add(tomrrow+" 18:30");
 					}
 			break;
 			case 4:if(whereEating.equals("饭前")) {
-						remaindTime.add(tomrrow+" 7:30");
+						remaindTime.add(tomrrow+" 07:30");
 						remaindTime.add(tomrrow+" 11:30");
 						remaindTime.add(tomrrow+" 15:30");
 						remaindTime.add(tomrrow+" 18:30");
 				   }else if(whereEating.equals("饭后")){
-					   	remaindTime.add(tomrrow+" 7:30");
+					   	remaindTime.add(tomrrow+" 07:30");
 						remaindTime.add(tomrrow+" 11:30");
 						remaindTime.add(tomrrow+" 15:30");
 						remaindTime.add(tomrrow+" 18:30");
@@ -237,6 +278,15 @@ public class RemaindController extends CommonController{
 			/*未来可以有选择添加几天的*/			
 			for(int k=0;k<remaindTime.size();k++) {		
 				Map<String,Object> data = new HashMap<String, Object>();
+				if(!"".equals(phone)) {
+					data.put("phone", phone);
+					//通过电话号码查询userId
+					//LscExchangeDb lsc = new LscExchangeDb();
+					lsc.setData(data);
+					lsc.setSqlPath("remiand/QryUserIdByPhone");
+					List<Map<String,Object>> l = exchangeDbService.selectDb(lsc);
+					data.put("userId",l.get(0).get("userId"));
+				}	
 				Object userId = session.getAttribute("userId");
 				if(userId!=null) {
 					data.put("userId",userId);
@@ -263,11 +313,61 @@ public class RemaindController extends CommonController{
 					}
 				}
 				if(data.get("boxId")==null) {
-					data.put("boxId", 1);              //未来会有判断	(判断那个盒子是空的)
+					  //查询提醒表里的盒子	(判断那个盒子是空的)
+					List<Map<String,Object>> boxIdList = new ArrayList<Map<String,Object>>();
+					List<Map<String,Object>> boxSerialList = new ArrayList<Map<String,Object>>();
+					List<Map<String,Object>> squareNumberList = new ArrayList<Map<String,Object>>();
+					List l = new ArrayList();
+					lsc.setData(data);
+					 lsc.setSqlPath("remiand/QryEmptyBoxId"); 
+					 try {
+						 boxIdList = exchangeDbService.selectDb(lsc);
+						 for(int n=0;n<boxIdList.size();n++) {
+							 l.add(boxIdList.get(n).get("box_id"));
+						 }
+					 }catch(Exception e) {
+						 e.printStackTrace();
+					 }
+					 //查询一共多少盒子
+					 lsc.setSqlPath("remiand/QryAllBoxSerial");
+					 int num = 0;
+					 try {
+						 boxSerialList = exchangeDbService.selectDbNoParam(lsc);
+						 for(int p=0;p<boxSerialList.size();p++) {
+							 data.put("boxSerial", boxSerialList.get(p).get("box_serial"));
+							 lsc.setSqlPath("remiand/QryAllBoxNum");
+							 squareNumberList = exchangeDbService.selectDb(lsc);
+							 
+							 for(int n=0;n<squareNumberList.size();n++) {
+								num = num+ Integer.parseInt((squareNumberList.get(n).get("squareNumber").toString()==null)?"0":squareNumberList.get(n).get("squareNumber").toString());
+							 }
+						 }
+					 }catch(Exception e) {
+						 e.printStackTrace();
+					 }
+					 
+					 for(int n=1;n<num;n++) {
+						 if(!l.contains(n)) {
+							 data.put("boxId", n);    
+							 break;
+						 }
+					 }
+					      
 				}
+				//判断时间 小于当前时间的过滤掉
 				date = new Date();
-				String nowDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:DD").format(date);
-				if(remaindTime.get(k).toString().compareTo(nowDate)>=0) {
+				long nowDate = date.getTime();
+				sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");		
+				long ret = 0;
+				System.out.println("remaindTime:"+remaindTime);
+				System.out.println(remaindTime.get(k));
+				System.out.println(sdf.parse(remaindTime.get(k)));
+				try {
+					ret = sdf.parse(remaindTime.get(k)).getTime();
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				if(ret>nowDate) {
 					remiandList.add(data);
 				}
 			}
@@ -283,7 +383,7 @@ public class RemaindController extends CommonController{
 				exchangeDbService.saveDb(lsc);
 				/**添加定时提醒任务*/
 				try {
-					commonService.TimerRemindTask(remiandList.get(i).get("remindTime"),0);
+				//	commonService.TimerRemindTask(remiandList.get(i).get("remindTime"),0);
 				}catch(Exception e) {
 					e.printStackTrace();
 				}

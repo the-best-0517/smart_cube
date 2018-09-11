@@ -1,8 +1,8 @@
 package cn.buu.smart_cube.login.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.contoller.CommonController;
-import cn.buu.smart_cube.common.entity.AppPush;
 import cn.buu.smart_cube.common.service.impl.CommonServiceImpl;
 import cn.buu.smart_cube.common.web.JsonResult;
 import cn.buu.smart_cube.login.entity.User;
@@ -41,15 +40,25 @@ public class LoginController extends CommonController{
 	public JsonResult pull() throws IOException {
 		System.out.println("pull");
 		hanldDiff();        
-		AppPush app = new AppPush();
-		app.appPush();
-		System.out.println("pushok");
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		String nowDate = sdf.format(date);
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("nowDate",nowDate);
 		LscExchangeDb db = new LscExchangeDb();
-		db.setSqlPath("test/QryMsg");
+		db.setSqlPath("remiand/QryIfRemaind");
+		db.setData(map);
 		List<Map<String, Object>> data = exchangeDbService.selectDb(db);
+		List<String> list = new ArrayList<String>();
 		System.out.println("data:"+data);
-		return new JsonResult(data);
-		
+		if(data!=null&data.size()>0) {
+			System.out.println("不是空");
+			//O01100000000
+			list.add("O01100000000");
+			return new JsonResult(list);
+		}else {
+			return new JsonResult("error");
+		}				
 	}
 	/**
 	 * ��ѯ�����û���
