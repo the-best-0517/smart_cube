@@ -1,6 +1,8 @@
 package cn.buu.smart_cube.mycase.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.contoller.CommonController;
-import cn.buu.smart_cube.common.service.CommonService;
+import cn.buu.smart_cube.common.service.impl.CommonServiceImpl;
 import cn.buu.smart_cube.common.web.JsonResult;
 
 @Controller
@@ -24,7 +26,62 @@ public class CaseController extends CommonController{
 	@Resource
 	private ExchangeDbService exchangeDbService;
 	@Resource
-	private CommonService commonService;
+	private CommonServiceImpl commonServiceImpl;
+		
+	/**
+	 * 删除病例
+	 * @param caseId
+	 * @return
+	 */
+	@RequestMapping("/delCase")
+	@ResponseBody
+	public JsonResult delCase(String caseId) {
+		Map<String,Object> data = new HashMap<String,Object>();
+		data.put("caseId", caseId);
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("mycase/DeleteCaseByCaseId");
+		try {
+			exchangeDbService.deleteDb(lsc);
+			lsc.setSqlPath("mycase/DeleteCaseImgByCaseId");
+			exchangeDbService.deleteDb(lsc);
+			return new JsonResult();
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new JsonResult("delete error");
+		}			
+	}
+		
+	@RequestMapping("/saveCaseImg")
+	@ResponseBody
+	public JsonResult saveCaseImg(String caseId,String base64) {
+		  System.out.println("imageBase64:"+base64);
+		  base64 = base64.replaceAll("data:image/png;base64,", "");
+		  System.out.println("imageBase640.0:"+base64);
+		  try {
+			  Date date = new Date();
+			  SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
+			  int s =(int)(Math.random()*99+1);
+			  String path = "/www/server/apache-tomcat-default/webapps/smart_cube/file/img/"+sdf.format(date)+s+".png";
+			  System.out.println("path:"+path);
+			  boolean b = commonServiceImpl.generateImage(base64, path);  //解密并保存图片
+			  if(b) {
+				  //数据库
+				  String dbpath = "file/img/"+sdf.format(date)+s+".png";
+				  Map<String,Object> data = new HashMap<String,Object>();
+				  data.put("path", dbpath);
+				  data.put("caseId",caseId);
+				  LscExchangeDb lsc = new LscExchangeDb();
+				  lsc.setData(data);
+				  lsc.setSqlPath("mycase/saveCaseImgPath");
+				  exchangeDbService.saveDb(lsc);
+			  }
+			  return new JsonResult();
+		  }catch(Exception e) {
+			  e.printStackTrace();
+			  return new JsonResult("error");
+		  }
+	}
 	
 	/**
 	 * 保存病例信息 返回病例iD
@@ -43,7 +100,7 @@ public class CaseController extends CommonController{
 		data.put("hospital", hospital);
 		data.put("season",season);
 		data.put("userId", userId);
-		String caseId = commonService.getOnlyKey()+"";
+		String caseId = commonServiceImpl.getOnlyKey()+"";
 		data.put("caseId", caseId);
 		List<String> list = new ArrayList<String>();
 		list.add(caseId);

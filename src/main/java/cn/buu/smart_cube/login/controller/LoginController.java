@@ -193,12 +193,10 @@ public class LoginController extends CommonController{
 	  try {
 		  Date date = new Date();
 		  SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
-		  String userId =session.getAttribute("userId").toString();
 		  int s =(int)(Math.random()*99+1);
 		  String path = "/www/server/apache-tomcat-default/webapps/smart_cube/file/img/"+sdf.format(date)+s+".png";
-		 // String path = "/root"+File.separator+"smart_cube_file"+File.separator+"img"+File.separator+sdf.format(date)+s+".png";
 		  System.out.println("path:"+path);
-		  commonServiceImpl.generateImage(imageBase64, path); 
+		  commonServiceImpl.generateImage(imageBase64, path);  //解密并保存图片
 		  return new JsonResult();
 	  }catch(Exception e) {
 		  e.printStackTrace();
