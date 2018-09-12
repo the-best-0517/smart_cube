@@ -33,18 +33,8 @@
         <filter-name>CharacterFilter</filter-name>
         <url-pattern>*.do</url-pattern>
     </filter-mapping>
-    　　　　<filter>
-　　　　　　　　<description>字符集过滤器</description>
-　　　　　　　　<filter-name>encodingFilter</filter-name>
-　　　　　　　　<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-　　　　　　　　<init-param>
-　　　　　　　　　　<description>字符集编码</description>
-　　　　　　　　　　<param-name>encoding</param-name>
-　　　　　　　　　　<param-value>UTF-8</param-value>
-　　　　　　　　</init-param>
-　　　　　</filter>
-　　　　　<filter-mapping>
-　　　　　　<filter-name>encodingFilter</filter-name>
-　　　　　　<url-pattern>*.do</url-pattern>
-　　　　　</filter-mapping>
+    <!-- session保存时长 -->
+    <session-config>
+	<session-timeout>-1</session-timeout>
+	</session-config>
 </web-app>

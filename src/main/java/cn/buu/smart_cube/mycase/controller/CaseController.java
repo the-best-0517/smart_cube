@@ -55,6 +55,7 @@ public class CaseController extends CommonController{
 	@RequestMapping("/saveCaseImg")
 	@ResponseBody
 	public JsonResult saveCaseImg(String caseId,String base64) {
+		  hanldDiff();
 		  System.out.println("imageBase64:"+base64);
 		  base64 = base64.replaceAll("data:image/png;base64,", "");
 		  System.out.println("imageBase640.0:"+base64);
