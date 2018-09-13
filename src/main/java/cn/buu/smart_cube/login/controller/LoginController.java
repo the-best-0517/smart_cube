@@ -3,6 +3,7 @@ package cn.buu.smart_cube.login.controller;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,31 +31,86 @@ public class LoginController extends CommonController{
 	@Resource
 	private CommonServiceImpl commonServiceImpl;
 	
+	/**
+	 * 查询buleMac 连接蓝牙用
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/linkBuleTooth")
+	@ResponseBody
+	public JsonResult linkBuleTooth(HttpSession session) {
+		System.out.println("linkBuleTooth");
+		hanldDiff();
+		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		Map<String,Object> data = new HashMap<String, Object>();
+		Object userId = session.getAttribute("userId");
+		data.put("userId", userId);
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("login/QryBuleToothMac");
+		try {
+			list = exchangeDbService.selectDb(lsc);
+			return new JsonResult(list);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new JsonResult("error");
+		}
+	}
 	
-	
-	
-	
-	
+	/**
+	 * 查询提醒时间
+	 * @return
+	 * @throws IOException
+	 */	
 	@RequestMapping("/pull")
 	@ResponseBody
-	public JsonResult pull() throws IOException {
+	public JsonResult pull(HttpSession session) throws IOException {
 		System.out.println("pull");
 		hanldDiff();        
-		Date date = new Date();
+		Date date = new Date();        
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		String nowDate = sdf.format(date);
+	 	Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MINUTE,-30);//+1今天的时间加一天
+        date = calendar.getTime();
+        String before30 = sdf.format(date);
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("nowDate",nowDate);
+		map.put("before", before30);
+		Object userId = session.getAttribute("userId");
+		map.put("userId", userId==null?123:userId);
 		LscExchangeDb db = new LscExchangeDb();
-		db.setSqlPath("remiand/QryIfRemaind");
 		db.setData(map);
+		try {
+			db.setSqlPath("remiand/QryIfBeforeRemaind");
+			List<Map<String, Object>> d = exchangeDbService.selectDb(db);
+			if(d!=null&d.size()>0) {
+				//短信家人
+				System.out.println("短信家人...");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		db.setSqlPath("remiand/QryIfRemaind");
 		List<Map<String, Object>> data = exchangeDbService.selectDb(db);
 		List<String> list = new ArrayList<String>();
 		System.out.println("data:"+data);
 		if(data!=null&data.size()>0) {
 			System.out.println("不是空");
+			String str = "O01";
+			int bNum = Integer.parseInt(data.get(0).get("boxId").toString());
+			for(int i=1;i<=bNum;i++) {
+				if(i==bNum) {
+					str = str+"1";
+					break;
+				}
+				str = str + "0";
+			}		
 			//O01100000000
-			list.add("O01100000000");
+			System.out.println("str:"+str);
+			list.add(str);
+			list.add(data.get(0).get("boxId").toString());
 			return new JsonResult(list);
 		}else {
 			return new JsonResult("error");
