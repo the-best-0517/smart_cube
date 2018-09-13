@@ -7,4 +7,4 @@ remind_time remindTime,
 is_delete as isDelete,
 dose as dose
 from t_md_remind
-where remind_time = #{nowDate} and user_id = #{userId} and is_eating = '0'
+where remind_time = #{before} and user_id = #{userId} and is_eating = '0'
