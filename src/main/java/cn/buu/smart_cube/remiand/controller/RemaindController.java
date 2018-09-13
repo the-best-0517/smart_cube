@@ -34,6 +34,30 @@ public class RemaindController extends CommonController{
 	@Resource
 	private HttpSession session;
 	
+	@RequestMapping("/deleteRemindMsg")
+	@ResponseBody
+	public JsonResult deleteRemindMsg(String remindId) {
+		System.out.println("deleteRemindMsg");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String, Object>();
+		data.put("remindId", remindId);
+		LscExchangeDb lsc = new LscExchangeDb();
+		/**通过remindID 查当前条的盒子号和提醒时间*/
+		lsc.setData(data);
+		lsc.setSqlPath("remiand/QryRemindMsgByRemindId");
+		List<Map<String,Object>> list = exchangeDbService.selectDb(lsc);
+		data.put("boxId", list.get(0).get("boxId"));
+		data.put("remindTime",list.get(0).get("remindTime"));
+		lsc.setData(data);
+		lsc.setSqlPath("remiand/DeleteRemindMsg");
+		try {
+			exchangeDbService.deleteDb(lsc);
+			return new JsonResult();
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new JsonResult("error");
+		}
+	}
 	/**
 	 * 保存编辑信息
 	 */
@@ -48,6 +72,12 @@ public class RemaindController extends CommonController{
 		remindBox = remindBox.replaceAll("号盒", "");
 		data.put("remindBox", remindBox);
 		LscExchangeDb lsc = new LscExchangeDb();
+		/**通过remindID 查当前条的盒子号和提醒时间*/
+		lsc.setData(data);
+		lsc.setSqlPath("remiand/QryRemindMsgByRemindId");
+		List<Map<String,Object>> list = exchangeDbService.selectDb(lsc);
+		data.put("boxId", list.get(0).get("boxId"));
+		data.put("remindTime",list.get(0).get("remindTime"));
 		lsc.setData(data);
 		lsc.setSqlPath("remiand/updateRemindMsg");
 		try {
@@ -152,10 +182,21 @@ public class RemaindController extends CommonController{
 	 */
 	@RequestMapping("/makeRemiandBypills")
 	@ResponseBody
-	public JsonResult makeRemiandBypills(@RequestBody String jsonPills,HttpSession session,String phone,String times) throws UnsupportedEncodingException, ParseException {
+	public JsonResult makeRemiandBypills(@RequestBody String jsonPills,HttpSession session) throws UnsupportedEncodingException, ParseException {
 		hanldDiff();
 		jsonPills = java.net.URLDecoder.decode(jsonPills,"UTF-8");
 		System.out.println("makeRemiandBypills:"+jsonPills);
+		
+		int x = jsonPills.lastIndexOf("&",jsonPills.lastIndexOf("&")-1);
+		String str = jsonPills;
+		String pt = str.substring(x);
+		String[] pts = pt.split("&");
+		String phone = pts[0].split("=")[1];
+		System.out.println("phone:"+phone);
+		String times = pts[1].split("=")[1];
+		System.out.println("times:"+times);
+		jsonPills = jsonPills.substring(0, x);
+		System.out.println("jsonPills:::"+jsonPills);
 		
 		List<String> list = new ArrayList<String>();
 		List<Map<String,String>> l = new ArrayList<Map<String,String>>();
@@ -180,6 +221,7 @@ public class RemaindController extends CommonController{
 		}
 		System.out.println("l:"+l);
 		/**根据药品信息生成提醒事项*/
+		System.out.println("times:"+times);
 		for(int i=0;i<Integer.parseInt(times);i++) {
 			makeRemiandBypills(l,session,phone,i);
 		}
@@ -278,7 +320,7 @@ public class RemaindController extends CommonController{
 			/*未来可以有选择添加几天的*/			
 			for(int k=0;k<remaindTime.size();k++) {		
 				Map<String,Object> data = new HashMap<String, Object>();
-				if(!"".equals(phone)) {
+				if(!"".equals(phone)&&!phone.equals(null)&&phone!=null) {
 					data.put("phone", phone);
 					//通过电话号码查询userId
 					//LscExchangeDb lsc = new LscExchangeDb();
