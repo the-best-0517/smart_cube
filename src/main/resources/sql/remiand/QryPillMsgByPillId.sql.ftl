@@ -2,6 +2,7 @@ select pill_id as pillId,pill_desc as pillDesc,
 instructions,
 where_eating ,
 pill_instruction as pillInstruction,
+groom as groom,
 img_path as pillImg,
 d.name as whereEating
 from t_md_pill
