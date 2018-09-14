@@ -191,10 +191,15 @@ public class RemaindController extends CommonController{
 		String str = jsonPills;
 		String pt = str.substring(x);
 		String[] pts = pt.split("&");
-		String phone = pts[0].split("=")[1];
+		//家属电话
+		String[] p1 = pts[1].split("=");
+		String phone = p1.length>1?p1[1]:null;
 		System.out.println("phone:"+phone);
-		String times = pts[1].split("=")[1];
+		//天数
+		String[] t1 = pts[2].split("=");
+		String times = t1.length>1?t1[1]:"2";
 		System.out.println("times:"+times);
+		
 		jsonPills = jsonPills.substring(0, x);
 		System.out.println("jsonPills:::"+jsonPills);
 		
@@ -227,10 +232,15 @@ public class RemaindController extends CommonController{
 		}
 		
 		return new JsonResult();		
-	}
+	}	
+
 	/**
-	 * �������Ѽ�¼
-	 * @param list
+	 * 生成智能提醒记录
+	 * @param list			药品集合
+	 * @param session
+	 * @param phone			家属模式专用。（家属电话）
+	 * @param time			天数
+	 * @throws ParseException
 	 */
 	List<Map<String,Object>> remiandList = new ArrayList<Map<String, Object>>();
 	private void makeRemiandBypills(List<Map<String, String>> list,HttpSession session,String phone,int time) throws ParseException {		
@@ -275,7 +285,22 @@ public class RemaindController extends CommonController{
 	        String tomrrow = sdf.format(date);
 			/*未来：
 			 *  拿到设定的吃饭时间
-			 * */				
+			 * */
+	        /**获取个人习惯，吃饭时间*/
+//	        lsc = new LscExchangeDb();
+//	        map.put("userId", session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+//	        lsc.setData(map);
+//	        lsc.setSqlPath("remiand/QryHabitByUserId");
+//	        List<Map<String,Object>> habit = null;
+//	        try {
+//	        	habit = exchangeDbService.selectDb(lsc);
+//	        }catch(Exception e) {
+//	        	e.printStackTrace();
+//	        }
+//	        String breakfast = habit.get(0).get("breakfast").toString()==null?"08:00":habit.get(0).get("breakfast").toString();
+//	        String lunch = habit.get(0).get("lunch").toString()==null?"12:00":habit.get(0).get("lunch").toString();
+//	        String dinner = habit.get(0).get("dinner").toString()==null?"18:00":habit.get(0).get("dinner").toString();
+	        
 			List<String> remaindTime = new ArrayList<String>();
 			switch(times) {
 			case 1: if(whereEating.equals("空腹")||whereEating.equals("饭前")) {
@@ -320,7 +345,7 @@ public class RemaindController extends CommonController{
 			/*未来可以有选择添加几天的*/			
 			for(int k=0;k<remaindTime.size();k++) {		
 				Map<String,Object> data = new HashMap<String, Object>();
-				if(!"".equals(phone)&&!phone.equals(null)&&phone!=null) {
+				if(phone!=null) {
 					data.put("phone", phone);
 					//通过电话号码查询userId
 					//LscExchangeDb lsc = new LscExchangeDb();
@@ -347,25 +372,41 @@ public class RemaindController extends CommonController{
 				long remindId = commonService.getOnlyKey();
 				data.put("remindId", remindId);
 				/**通过时间 在remaindList中找到相同时间的盒id*/
+				List<Integer> l = new ArrayList<Integer>();
 				String rt = remaindTime.get(k);
 				for(int m=0;m<remiandList.size();m++) {
+					l.add(Integer.parseInt(remiandList.get(m).get("boxId").toString()));
 					if(rt.equals(remiandList.get(m).get("remindTime"))) {
 						data.put("boxId",remiandList.get(m).get("boxId"));
 						break;
 					}
 				}
 				if(data.get("boxId")==null) {
+					//数据库中寻找相同时间的盒子号
+					lsc = new LscExchangeDb();
+					data.put("rt", rt);
+					lsc.setData(data);
+					lsc.setSqlPath("remiand/QrySameTimeBoxId");
+					try {
+						List<Map<String,Object>> dbBoxId = exchangeDbService.selectDb(lsc);
+						if(dbBoxId.size()>0) {
+							data.put("boxId", dbBoxId.get(0).get("boxId"));
+						}					
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
+				if(data.get("boxId")==null) {
 					  //查询提醒表里的盒子	(判断那个盒子是空的)
 					List<Map<String,Object>> boxIdList = new ArrayList<Map<String,Object>>();
 					List<Map<String,Object>> boxSerialList = new ArrayList<Map<String,Object>>();
-					List<Map<String,Object>> squareNumberList = new ArrayList<Map<String,Object>>();
-					List l = new ArrayList();
+					List<Map<String,Object>> squareNumberList = new ArrayList<Map<String,Object>>();				
 					lsc.setData(data);
 					 lsc.setSqlPath("remiand/QryEmptyBoxId"); 
 					 try {
 						 boxIdList = exchangeDbService.selectDb(lsc);
 						 for(int n=0;n<boxIdList.size();n++) {
-							 l.add(boxIdList.get(n).get("box_id"));
+							 l.add(Integer.parseInt(boxIdList.get(n).get("box_id").toString()));
 						 }
 					 }catch(Exception e) {
 						 e.printStackTrace();
@@ -387,8 +428,9 @@ public class RemaindController extends CommonController{
 					 }catch(Exception e) {
 						 e.printStackTrace();
 					 }
-					 
+					 System.out.println("l:"+l);				 
 					 for(int n=1;n<num;n++) {
+						 System.out.println(l.contains(n));
 						 if(!l.contains(n)) {
 							 data.put("boxId", n);    
 							 break;
@@ -423,6 +465,10 @@ public class RemaindController extends CommonController{
 			lsc.setData(remiandList.get(i));
 			try {
 				exchangeDbService.saveDb(lsc);
+				if(i==remiandList.size()-1) {
+					//保存成功清空reminadList
+					remiandList.clear();
+				}
 				/**添加定时提醒任务*/
 				try {
 				//	commonService.TimerRemindTask(remiandList.get(i).get("remindTime"),0);
