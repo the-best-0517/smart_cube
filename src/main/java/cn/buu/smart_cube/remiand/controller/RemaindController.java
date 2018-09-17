@@ -34,6 +34,60 @@ public class RemaindController extends CommonController{
 	@Resource
 	private HttpSession session;
 	
+	@RequestMapping
+	@ResponseBody
+	public JsonResult insertboxSerial(String boxSerial,HttpSession session) {
+		Map<String,Object> data = new HashMap<String,Object>(16);
+		List<Map<String,Object>> list = null;
+		data.put("boxSerial",boxSerial);
+		data.put("userId", session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("remiand/QryBoxNumByUserId");
+		try {
+			list = exchangeDbService.selectDb(lsc);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new JsonResult("error");
+		}
+		int num = Integer.parseInt(list.get(list.size()-1).toString());
+		data.put("boxNum",num);
+		lsc.setData(data);
+		lsc.setSqlPath("remiand/insertBoxSerial");
+		return new JsonResult();	
+	}
+	
+	/**
+	 * 更新吃药状态
+	 * @author 15874
+	 * @param boxId
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/changeIfEating")
+	@ResponseBody
+	public JsonResult changeIfEating(String boxId,HttpSession session) {
+	    Map<String,Object> data = new HashMap<String,Object>(16);
+	    data.put("boxId",boxId);
+	    data.put("userId", session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+	    LscExchangeDb lsc = new LscExchangeDb();
+	    lsc.setData(data);
+	    lsc.setSqlPath("remiand/updateIfEating");
+	    try {
+	    	exchangeDbService.saveDb(lsc);
+	    	return new JsonResult();
+	    }catch(Exception e) {
+	    	e.printStackTrace();
+	    	return new JsonResult("error");
+	    }	
+	}
+	
+	/**
+	 * 删除提醒事项
+	 * @author 15874
+	 * @param remindId
+	 * @return
+	 */
 	@RequestMapping("/deleteRemindMsg")
 	@ResponseBody
 	public JsonResult deleteRemindMsg(String remindId) {
@@ -303,36 +357,36 @@ public class RemaindController extends CommonController{
 	        
 			List<String> remaindTime = new ArrayList<String>();
 			switch(times) {
-			case 1: if(whereEating.equals("空腹")||whereEating.equals("饭前")) {
+			case 1: if("空腹".equals(whereEating)||"饭前".equals(whereEating)) {
 						remaindTime.add(tomrrow+" 07:30");
-					}else if(whereEating.equals("饭后")) {
+					}else if("饭后".equals(whereEating)) {
 						remaindTime.add(tomrrow+" 08:30");
 					}
 			break;
-			case 2:if(whereEating.equals("饭前")) {
+			case 2:if("饭前".equals(whereEating)) {
 						remaindTime.add(tomrrow+" 07:30");
 						remaindTime.add(tomrrow+" 17:30");
-					}else if(whereEating.equals("饭后")) {
+					}else if("饭后".equals(whereEating)) {
 						remaindTime.add(tomrrow+" 08:30");
 						remaindTime.add(tomrrow+" 18:30");
 					}
 			break;
-			case 3:if(whereEating.equals("饭前")) {
+			case 3:if("饭前".equals(whereEating)) {
 						remaindTime.add(tomrrow+" 07:30");
 						remaindTime.add(tomrrow+" 11:30");
 						remaindTime.add(tomrrow+" 17:30");
-					}else if(whereEating.equals("饭后")) {
+					}else if("饭后".equals(whereEating)) {
 						remaindTime.add(tomrrow+" 08:30");
 						remaindTime.add(tomrrow+" 12:30");
 						remaindTime.add(tomrrow+" 18:30");
 					}
 			break;
-			case 4:if(whereEating.equals("饭前")) {
+			case 4:if("饭前".equals(whereEating)) {
 						remaindTime.add(tomrrow+" 07:30");
 						remaindTime.add(tomrrow+" 11:30");
 						remaindTime.add(tomrrow+" 15:30");
 						remaindTime.add(tomrrow+" 18:30");
-				   }else if(whereEating.equals("饭后")){
+				   }else if("饭后".equals(whereEating)){
 					   	remaindTime.add(tomrrow+" 07:30");
 						remaindTime.add(tomrrow+" 11:30");
 						remaindTime.add(tomrrow+" 15:30");
@@ -345,7 +399,7 @@ public class RemaindController extends CommonController{
 			/*未来可以有选择添加几天的*/			
 			for(int k=0;k<remaindTime.size();k++) {		
 				Map<String,Object> data = new HashMap<String, Object>();
-				if(phone!=null) {
+				if(phone!=null&&"".equals(phone)&&"null".equals(phone)) {
 					data.put("phone", phone);
 					//通过电话号码查询userId
 					//LscExchangeDb lsc = new LscExchangeDb();

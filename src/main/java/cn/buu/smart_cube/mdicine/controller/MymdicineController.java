@@ -27,7 +27,7 @@ public class MymdicineController extends CommonController{
 	private CommonService commonService;
 	
 	/**
-	 * 
+	 * @author 15874
 	 * @param x     		 x 坐标
 	 * @param y
 	 * @param whichMedBox    拼插药盒  哪个药盒  主盒还是副盒(用于判断移动到哪个小药盒里边)

@@ -58,6 +58,7 @@ public class CommonServiceImpl implements CommonService{
 	/**
 	 * 流水号
 	 */
+	@Override
 	public long getOnlyKey() {
 		long key = 0;
 		try {
@@ -78,6 +79,7 @@ public class CommonServiceImpl implements CommonService{
 	 * interval: 延时时间  毫秒  用于循环执行（不可为0）
 	 * 任务逻辑后一定要有  timer.cancel()
 	 */
+	@Override
 	public void TimerRemindTask(Object date, long interVal) {
 		System.out.println("date:"+date);
 		final Timer timer = new Timer();

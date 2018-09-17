@@ -15,13 +15,21 @@ import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.contoller.CommonController;
 import cn.buu.smart_cube.common.web.JsonResult;
-
+/**
+ * 
+ * @author ABC
+ *
+ */
 @Controller
 @RequestMapping("/infoCard")
 public class InfoCardController extends CommonController{
 	@Resource
 	private ExchangeDbService exchangeDbService;
-	
+	/**
+	 * @author 15874
+	 * @param session
+	 * @return
+	 */
 	@RequestMapping("/showInfoCard")
 	@ResponseBody
 	public JsonResult showInfoCard(HttpSession session) {
@@ -29,7 +37,7 @@ public class InfoCardController extends CommonController{
 		hanldDiff();
 		Object usrId = session.getAttribute("userId");
 		List<Map<String,Object>> list = null;
-		Map<String,Object> data = new HashMap<String, Object>();
+		Map<String,Object> data =null;
 		data.put("userId", usrId);
 		LscExchangeDb lsc = new LscExchangeDb();
 		lsc.setData(data);
@@ -50,9 +58,10 @@ public class InfoCardController extends CommonController{
 		System.out.println("saveInfoCard");
 		hanldDiff();
 		Object usrId = session.getAttribute("userId");
-		Map<String,Object> data = new HashMap<String, Object>();
+		Map<String,Object> data = new HashMap<String, Object>(100);
 		data.put("name", name);
-		if("男".equals(sex)) {
+		String man = "男";
+		if(man.equals(sex)) {
 			data.put("sex",1 );
 		}else {
 			data.put("sex",0 );

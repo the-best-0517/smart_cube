@@ -70,7 +70,7 @@ public class CaseController extends CommonController{
 				  //数据库
 				  String dbpath = "file/img/"+sdf.format(date)+s+".png";
 				  Map<String,Object> data = new HashMap<String,Object>();
-				  data.put("path", dbpath);
+				  data.put("imgPath", dbpath);
 				  data.put("caseId",caseId);
 				  LscExchangeDb lsc = new LscExchangeDb();
 				  lsc.setData(data);

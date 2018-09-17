@@ -22,7 +22,11 @@ import cn.buu.smart_cube.common.contoller.CommonController;
 import cn.buu.smart_cube.common.service.impl.CommonServiceImpl;
 import cn.buu.smart_cube.common.web.JsonResult;
 import cn.buu.smart_cube.login.entity.User;
-
+/**
+ * 
+ * @author ABC
+ *
+ */
 @Controller
 @RequestMapping("/login")
 public class LoginController extends CommonController{
@@ -72,7 +76,8 @@ public class LoginController extends CommonController{
 		String nowDate = sdf.format(date);
 	 	Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.add(Calendar.MINUTE,-30);//+1今天的时间加一天
+        //+1今天的时间加一天
+        calendar.add(Calendar.MINUTE,-30);
         date = calendar.getTime();
         String before30 = sdf.format(date);
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -138,7 +143,7 @@ public class LoginController extends CommonController{
 	public JsonResult savaUser(String userName,String pwd,String phone) {
 		System.out.println("savaUser");
 		hanldDiff();
-		long userId = commonServiceImpl.getOnlyKey();  //������ʱ����+��λ�����
+		long userId = commonServiceImpl.getOnlyKey(); 
 		Map<String,Object> data = new HashMap<String, Object>();
 		data.put("userName", userName);
 		data.put("userId", userId);
