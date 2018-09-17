@@ -1,4 +1,5 @@
 select 
+pill_id as pillId,
 pill_desc as pillDesc,
 dose 
 from t_md_remind

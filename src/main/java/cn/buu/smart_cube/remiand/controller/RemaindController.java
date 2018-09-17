@@ -34,9 +34,18 @@ public class RemaindController extends CommonController{
 	@Resource
 	private HttpSession session;
 	
-	@RequestMapping
+	
+	/**
+	 * 保存药品序列号（增加拓展盒时用）
+	 * @param boxSerial
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/insertboxSerial")
 	@ResponseBody
 	public JsonResult insertboxSerial(String boxSerial,HttpSession session) {
+		System.out.println("insertboxSerial");
+		hanldDiff();
 		Map<String,Object> data = new HashMap<String,Object>(16);
 		List<Map<String,Object>> list = null;
 		data.put("boxSerial",boxSerial);
@@ -266,14 +275,17 @@ public class RemaindController extends CommonController{
 		}
 		Map<String,String> data = null;
 		for(int i=0;i<list.size();i++) {
-			if(i==0||i%3==0) {
+			if(i==0||i%4==0) {
 				data = new HashMap<String, String>();
 				data.put("pillDesc",list.get(i));
 			}
-			if(i%3==1) {
-				data.put("instructions",list.get(i));
+			if(i%4==1) {
+				data.put("EatDay",list.get(i));
 			}	
-			if(i%3==2) {
+			if(i%4==2) {
+				data.put("EatTimes",list.get(i));
+			}
+			if(i%4==3) {
 				data.put("whereEating", list.get(i));
 				l.add(data);
 			}
@@ -300,7 +312,6 @@ public class RemaindController extends CommonController{
 	private void makeRemiandBypills(List<Map<String, String>> list,HttpSession session,String phone,int time) throws ParseException {		
 		for(int i=0;i<list.size();i++) {
 			/**获取一天的次数  times   每顿的个数  dose*/
-			String instructions = list.get(i).get("instructions");
 			String whereEating = list.get(i).get("whereEating");  //饭前或者饭后或者空肚
 			if(whereEating.equals(null)) {
 				whereEating = "饭后";
@@ -319,14 +330,14 @@ public class RemaindController extends CommonController{
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
-			
-			String[] s = instructions.split(",");
-			int end = s[0].indexOf("次");
-			int start = s[0].indexOf("天");
-			int times = Integer.parseInt(s[0].substring(start+1, end));
+			String EatDay =  list.get(i).get("EatDay").toString();
+			int end = EatDay.indexOf("次");
+			int start = EatDay.indexOf("日");
+			int times = Integer.parseInt(EatDay.substring(start+1, end));
 			System.out.println("times:"+times);
-			start = s[1].indexOf("次");
-			int dose = Integer.parseInt(s[1].substring(start+1, s[1].length()-1));
+			String EatTimes = list.get(i).get("EatTimes").toString();
+			start = EatTimes.indexOf("次");
+			int dose = Integer.parseInt(EatTimes.substring(start+1, EatTimes.length()-1));
 			System.out.println("dose:"+dose);
 			/**分类讨论设置时间*/
 			Date date = new Date();

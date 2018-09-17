@@ -35,19 +35,20 @@ public class InfoCardController extends CommonController{
 	public JsonResult showInfoCard(HttpSession session) {
 		System.out.println("showInfoCard");
 		hanldDiff();
-		Object usrId = session.getAttribute("userId");
+		Object userId = session.getAttribute("userId");
 		List<Map<String,Object>> list = null;
-		Map<String,Object> data =null;
-		data.put("userId", usrId);
+		Map<String,Object> data =new HashMap<String,Object>();
+		data.put("userId", userId);
 		LscExchangeDb lsc = new LscExchangeDb();
 		lsc.setData(data);
 		lsc.setSqlPath("infoCard/showInfoCard");
 		try {
 			list = exchangeDbService.selectDb(lsc);
+			return new JsonResult(list);
 		}catch(Exception e) {
-			e.printStackTrace();			
-		}
-		return new JsonResult(list);
+			e.printStackTrace();	
+			return new JsonResult("error");
+		}	
 	}
 	
 	@RequestMapping("/saveInfoCard")
