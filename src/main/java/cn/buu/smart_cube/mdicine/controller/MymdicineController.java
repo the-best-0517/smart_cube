@@ -57,9 +57,10 @@ public class MymdicineController extends CommonController{
 			return new JsonResult();
 		}else {
 			//更新提醒表
+			data.put("boxId", boxId);
 			LscExchangeDb lsc = new LscExchangeDb();
 			lsc.setData(data);
-			lsc.setSqlPath("medicine/updateRedPill");
+			lsc.setSqlPath("medicine/updateRePill");
 			try {
 				exchangeDbService.saveDb(lsc);
 				return new JsonResult();
@@ -158,29 +159,38 @@ public class MymdicineController extends CommonController{
 		Object userId = session.getAttribute("userId");
 		data.put("userId", userId==null?123:userId);
 		int goalBox = 0;
-		if(37<=Integer.parseInt(x)&&Integer.parseInt(x)<=106) {
-			if(75<=Integer.parseInt(y)&&Integer.parseInt(y)<=146) {
+		if(40<=Integer.parseInt(x)&&Integer.parseInt(x)<=150) {
+			if(65<=Integer.parseInt(y)&&Integer.parseInt(y)<=175) {
 				goalBox = (Integer.parseInt(whichMedBox)-1)*6+1;
 			}
-			if(200<=Integer.parseInt(y)&&Integer.parseInt(y)<=370) {
+			if(175<Integer.parseInt(y)&&Integer.parseInt(y)<=285) {
 				goalBox = (Integer.parseInt(whichMedBox)-1)*6+4;
 			}
+//			if(285<Integer.parseInt(y)&&Integer.parseInt(y)<=395) {
+//				goalBox = (Integer.parseInt(whichMedBox)-1)*6+7;
+//			}
 		}
-		if(267<=Integer.parseInt(x)&&Integer.parseInt(x)<=336) {
-			if(75<=Integer.parseInt(y)&&Integer.parseInt(y)<=146) {
+		if(150<=Integer.parseInt(x)&&Integer.parseInt(x)<=260) {
+			if(65<=Integer.parseInt(y)&&Integer.parseInt(y)<=175) {
 				goalBox = (Integer.parseInt(whichMedBox)-1)*6+2;
 			}
-			if(200<=Integer.parseInt(y)&&Integer.parseInt(y)<=370) {
+			if(175<Integer.parseInt(y)&&Integer.parseInt(y)<=285) {
 				goalBox = (Integer.parseInt(whichMedBox)-1)*6+5;
 			}
+//			if(285<Integer.parseInt(y)&&Integer.parseInt(y)<=395) {
+//				goalBox = (Integer.parseInt(whichMedBox)-1)*6+8;
+//			}
 		}
-		if(497<=Integer.parseInt(x)&&Integer.parseInt(x)<=566) {
-			if(75<=Integer.parseInt(y)&&Integer.parseInt(y)<=146) {
+		if(260<Integer.parseInt(x)&&Integer.parseInt(x)<=370) {
+			if(65<=Integer.parseInt(y)&&Integer.parseInt(y)<=175) {
 				goalBox = (Integer.parseInt(whichMedBox)-1)*6+3;
 			}
-			if(200<=Integer.parseInt(y)&&Integer.parseInt(y)<=370) {
+			if(175<=Integer.parseInt(y)&&Integer.parseInt(y)<=285) {
 				goalBox = (Integer.parseInt(whichMedBox)-1)*6+6;
 			}
+//			if(285<=Integer.parseInt(y)&&Integer.parseInt(y)<=395) {
+//				goalBox = (Integer.parseInt(whichMedBox)-1)*6+9;
+//			}
 		}
 		if(goalBox==0) {
 			return new JsonResult("error");

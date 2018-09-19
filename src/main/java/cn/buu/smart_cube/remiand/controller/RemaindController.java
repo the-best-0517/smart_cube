@@ -439,6 +439,7 @@ public class RemaindController extends CommonController{
 				/**通过时间 在remaindList中找到相同时间的盒id*/
 				List<Integer> l = new ArrayList<Integer>();
 				String rt = remaindTime.get(k);
+				System.out.println("remiandList:"+remiandList);
 				for(int m=0;m<remiandList.size();m++) {
 					l.add(Integer.parseInt(remiandList.get(m).get("boxId").toString()));
 					if(rt.equals(remiandList.get(m).get("remindTime"))) {
@@ -494,7 +495,7 @@ public class RemaindController extends CommonController{
 						 e.printStackTrace();
 					 }
 					 System.out.println("l:"+l);				 
-					 for(int n=1;n<num;n++) {
+					 for(int n=1;n<=num;n++) {
 						 System.out.println(l.contains(n));
 						 if(!l.contains(n)) {
 							 data.put("boxId", n);    
@@ -503,6 +504,11 @@ public class RemaindController extends CommonController{
 					 }
 					      
 				}
+				if(data.get("boxId")==null) {
+					//无盒可用
+					System.out.println("盒不够了");
+					//return;
+				}else {
 				//判断时间 小于当前时间的过滤掉
 				date = new Date();
 				long nowDate = date.getTime();
@@ -518,6 +524,7 @@ public class RemaindController extends CommonController{
 				}
 				if(ret>nowDate) {
 					remiandList.add(data);
+				}
 				}
 			}
 			
