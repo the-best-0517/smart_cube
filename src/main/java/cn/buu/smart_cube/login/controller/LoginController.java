@@ -103,10 +103,26 @@ public class LoginController extends CommonController{
 		System.out.println("data:"+data);
 		if(data!=null&data.size()>0) {
 			System.out.println("不是空");
-			String str = "O01";
 			int bNum = Integer.parseInt(data.get(0).get("boxId").toString());
-			for(int i=1;i<=bNum;i++) {
-				if(i==bNum) {
+			/**查询自己的药盒数*/
+			LscExchangeDb lsc = new LscExchangeDb();
+			lsc.setData(map);
+			lsc.setSqlPath("login/QryAllBoxMsg");
+			List<Map<String,Object>> allBox = exchangeDbService.selectDb(lsc);
+			int squareNumber = 0;
+			String str = "";
+			int k = 0;
+			for(int i=0;i<allBox.size();i++) {
+				k = squareNumber;
+				squareNumber = squareNumber+Integer.parseInt(allBox.get(i).get("squareNumber").toString());
+				if(bNum<=squareNumber) {
+					int n = i+1;
+					str = "O0"+n;
+					break;
+				}
+			}		
+			for(k=k+1;k<=bNum;k++) {
+				if(k==bNum) {
 					str = str+"1";
 					break;
 				}

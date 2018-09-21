@@ -27,7 +27,31 @@ public class CaseController extends CommonController{
 	private ExchangeDbService exchangeDbService;
 	@Resource
 	private CommonServiceImpl commonServiceImpl;
-		
+	
+	
+	/**
+	 * 查询病例具体信息
+	 */
+	@RequestMapping("/showCaseDetail")
+	@ResponseBody
+	public JsonResult showCaseDetail(String caseId,HttpSession session) {
+		System.out.println("showCaseDetail");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String,Object>();
+		data.put("caseId", caseId);
+		data.put("userId",session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("mycase/QryCaseDetailByCaseId");
+		try {
+			List<Map<String,Object>> list = exchangeDbService.selectDb(lsc);
+			System.out.println("list:"+list);
+			return new JsonResult(list);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new JsonResult("error");
+		}
+	}
 	/**
 	 * 删除病例
 	 * @param caseId

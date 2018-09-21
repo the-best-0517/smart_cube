@@ -49,6 +49,7 @@ public class RemaindController extends CommonController{
 		Map<String,Object> data = new HashMap<String,Object>(16);
 		List<Map<String,Object>> list = null;
 		data.put("boxSerial",boxSerial);
+
 		data.put("userId", session.getAttribute("userId")==null?123:session.getAttribute("userId"));
 		LscExchangeDb lsc = new LscExchangeDb();
 		lsc.setData(data);
@@ -59,13 +60,54 @@ public class RemaindController extends CommonController{
 			e.printStackTrace();
 			return new JsonResult("error");
 		}
-		int num = Integer.parseInt(list.get(list.size()-1).toString());
+		
+		/***
+		 * 设置药盒编号（用于药盒的指令）
+		 */
+//		List<Integer> ll = new ArrayList<Integer>();
+//		for(int i=0;i<list.size();i++) {
+//			ll.add(Integer.parseInt(list.get(i).get("boxNum").toString()));
+//		}
+//		for(int i=1;i<10;i++) {
+//			if(!ll.contains(i)) {
+//				data.put("boxNum",i);
+//				break;
+//			}
+//		}
+		int num = list.size()+1;
 		data.put("boxNum",num);
+		boolean b = check(boxSerial,data);
 		lsc.setData(data);
-		lsc.setSqlPath("remiand/insertBoxSerial");
-		return new JsonResult();	
+		if(b) {
+			lsc.setSqlPath("remiand/insertBoxSerial");
+			exchangeDbService.saveDb(lsc);
+		}else {
+			//lsc.setSqlPath("remiand/updateBoxSerial");
+		}		 
+		 lsc.setSqlPath("remiand/QryBoxSerial");
+		 list = exchangeDbService.selectDb(lsc);
+		 boxSerial = list.get(0).get("boxSerial").toString();
+		 String boxNum = list.get(0).get("boxNum").toString();
+		 String set = "S0"+boxNum+boxSerial;
+		 List<String> l = new ArrayList<String>();
+		 l.add(set);
+		return new JsonResult(l);	
 	}
 	
+	private boolean check(String boxSerial, Map<String, Object> data) {
+		/**判断序列号是否重复*/
+		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("remiand/QryByBoxSerial");
+		list = exchangeDbService.selectDb(lsc);
+		if(list.size()==0) {
+			System.out.println("序列号不重复");
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * 更新吃药状态
 	 * @author 15874

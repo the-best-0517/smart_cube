@@ -20,7 +20,45 @@ import cn.buu.smart_cube.common.web.JsonResult;
 public class PillController extends CommonController{
 	 @Resource
 	 private ExchangeDbService exchangeDbService;
+	 /**
+	  * 保存药品评价 及其星级评价
+	  * @param starText	  几星
+	  * @param feelText	 评价
+	  * @param pillId	 药品id
+	  * @param session
+	  * @return
+	  */
+	 @RequestMapping("/saveAssess")
+	 @ResponseBody
+	 public JsonResult saveAssess(String starText,String feelText,String pillId,HttpSession session) {
+		 System.out.println("saveAssess");
+		 hanldDiff();
+		 Map<String,Object> data = new HashMap<String, Object>(16);	
+		 data.put("userId",session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+		 data.put("starText",starText);
+		 data.put("feelText",feelText);
+		 data.put("pillId",pillId);
+		 LscExchangeDb lsc = new LscExchangeDb();
+		 lsc.setData(data);
+		
+		 try {
+			 lsc.setSqlPath("pill/insertPost");
+			 exchangeDbService.saveDb(lsc);
+			 lsc.setSqlPath("pill/insertStar");
+			 exchangeDbService.saveDb(lsc);
+			 return new JsonResult();
+		 }catch(Exception e) {
+			 e.printStackTrace();
+			 return new JsonResult("error");
+		 }	
+	 }
 	 
+	 
+	 /**
+	  * 展示药品信息根据key
+	  * @param key  关键字
+	  * @return
+	  */
 	 @RequestMapping("/showAllPill")
 	 @ResponseBody
 	 public JsonResult showAllPill(String key) {
@@ -46,7 +84,12 @@ public class PillController extends CommonController{
 			return new JsonResult(e);
 		}		 
 	 }
-	 
+	 /**
+	  * 加载药品评论
+	  * @param pillId
+	  * @param session
+	  * @return
+	  */
 	 @RequestMapping("/showPost")
 	 @ResponseBody
 	 public JsonResult showPost(String pillId,HttpSession session) {
