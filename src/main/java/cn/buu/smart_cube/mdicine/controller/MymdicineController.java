@@ -154,6 +154,11 @@ public class MymdicineController extends CommonController{
 		System.out.println("checkMove");
 		hanldDiff();
 		Map<String,Object>  data = new HashMap<String,Object>();
+		pillDesc = pillDesc.replaceAll("\n", "");
+		pillDesc = pillDesc.replaceAll("删除", "");
+		pillDesc = pillDesc.replaceAll("编辑", "");
+		//String[] pillDescs = pillDesc.split("\n");
+		//System.out.println("pillDescs:"+pillDescs);
 		data.put("pillDesc", pillDesc.replaceAll("\\d", ""));
 		data.put("boxId", boxId);
 		Object userId = session.getAttribute("userId");
@@ -196,11 +201,22 @@ public class MymdicineController extends CommonController{
 			return new JsonResult("error");
 		}
 		data.put("goalBox", goalBox);
+		/**检查目标盒中是否有当前药品*/
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("medicine/QryGoalBoxMedicine");
+		List<Map<String,Object>> goalPillDescList = exchangeDbService.selectDb(lsc);
+		for(Map<String,Object> m:goalPillDescList) {
+			if(pillDesc.equals(m.get("pillDesc"))) {
+				return new JsonResult("目标药盒中已存在！");
+			}
+		}
+		
 		List<Integer> list = new ArrayList<Integer>();
 		list.add(goalBox);
 		List<Map<String,Object>> reList = null;
 		if(boxId==null||"".equals(boxId)) {
-			LscExchangeDb lsc = new LscExchangeDb();
+			//LscExchangeDb lsc = new LscExchangeDb();
 			lsc.setData(data);
 			lsc.setSqlPath("medicine/QryReMsgByGoalBox");
 			try {
@@ -220,7 +236,7 @@ public class MymdicineController extends CommonController{
 				return new JsonResult("error");
 			}
 		}else {
-			LscExchangeDb lsc = new LscExchangeDb();
+			//LscExchangeDb lsc = new LscExchangeDb();
 			lsc.setData(data);
 			lsc.setSqlPath("medicine/updateRemindMeg");
 			try {

@@ -156,9 +156,12 @@ public class LoginController extends CommonController{
 	
 	@RequestMapping("/saveUser")
 	@ResponseBody
-	public JsonResult savaUser(String userName,String pwd,String phone) {
+	public JsonResult savaUser(String userName,String pwd,String phone,String email) {
 		System.out.println("savaUser");
 		hanldDiff();
+		if(!"1234".equals(email)) {
+			return new JsonResult("验证码错误");
+		}
 		long userId = commonServiceImpl.getOnlyKey(); 
 		Map<String,Object> data = new HashMap<String, Object>();
 		data.put("userName", userName);
@@ -172,7 +175,7 @@ public class LoginController extends CommonController{
 		
 		try {
 			int rows = exchangeDbService.saveDb(db);
-			//��ɫ��
+			//保存角色信息
 			db.setSqlPath("login/saveUsertoRole");
 			exchangeDbService.saveDb(db);
 		}catch(Exception e) {

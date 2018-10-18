@@ -23,6 +23,79 @@ public class IndexSetController extends CommonController{
 		private ExchangeDbServiceImpl exchangeDbServiceImpl;
 		@Resource
 		private CommonServiceImpl commonServiceImpl;
+		
+		
+		@RequestMapping("/showEditWriting")
+		@ResponseBody
+		public JsonResult showEditWriting(String id) {
+			System.out.println("showEditWriting");
+			hanldDiff();
+			Map<String,Object> data = new HashMap<String,Object>();
+			data.put("id",id);
+			LscExchangeDb lsc = new LscExchangeDb();
+			lsc.setData(data);
+			lsc.setSqlPath("setting/QryWritingById");
+			try {
+				List<Map<String,Object>> list = exchangeDbServiceImpl.selectDb(lsc);
+				return new JsonResult(list);
+			}catch(Exception e) {
+				e.printStackTrace();
+				return new JsonResult("error");
+			}			
+		}
+		/**
+		 * 保存文章
+		 * @param title
+		 * @param time
+		 * @param text
+		 * @return
+		 */
+		@RequestMapping("/insertWriting")
+		@ResponseBody
+		public JsonResult insertWriting(String title,String time,String text) {
+			System.out.println("insertWriting");
+			hanldDiff();
+			long key = commonServiceImpl.getOnlyKey();
+			Map<String,Object> data = new HashMap<String,Object>();
+			data.put("writingId", key);
+			data.put("writingTitle",title);
+		//	data.put("time", time);
+			data.put("writingDesc", text);
+			LscExchangeDb lsc = new LscExchangeDb();
+			lsc.setData(data);
+			lsc.setSqlPath("setting/insertWriting");
+			try {
+				exchangeDbServiceImpl.saveDb(lsc);
+				return new JsonResult();
+			}catch(Exception e) {
+				e.printStackTrace();
+				return new JsonResult("error");
+			}
+						
+		}
+		/**
+		 * 根据id查询当条公告信息
+		 * @param id
+		 * @return
+		 */
+		@RequestMapping("/showEditNotic")
+		@ResponseBody
+		public JsonResult showEditNotic(String id) {
+			System.out.println("showEditNotic");
+			hanldDiff();
+			Map<String,Object> data = new HashMap<String,Object>();
+			data.put("id",id);
+			LscExchangeDb lsc = new LscExchangeDb();
+			lsc.setData(data);
+			lsc.setSqlPath("setting/QryNoticById");
+			try {
+				List<Map<String,Object>> list = exchangeDbServiceImpl.selectDb(lsc);
+				return new JsonResult(list);
+			}catch(Exception e) {
+				e.printStackTrace();
+				return new JsonResult("error");
+			}			
+		}
 		/**
 		 * 查询所有公告信息
 		 * @return

@@ -35,6 +35,28 @@ public class RemaindController extends CommonController{
 	private HttpSession session;
 	
 	
+	@RequestMapping("/upRemindTime")
+	@ResponseBody
+	public JsonResult upRemindTime(String futrueTime,String boxId,HttpSession session) {
+		System.out.println("upRemindTime");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String,Object>(16);
+		data.put("remindTime",futrueTime );
+		data.put("boxId", boxId);
+		data.put("userId", session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("remiand/updateRemindTime");
+		try {
+			exchangeDbService.saveDb(lsc);
+			return new JsonResult();
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new JsonResult("error");
+		}	
+	}
+	
+	
 	/**
 	 * 保存药品序列号（增加拓展盒时用）
 	 * @param boxSerial
@@ -118,6 +140,8 @@ public class RemaindController extends CommonController{
 	@RequestMapping("/changeIfEating")
 	@ResponseBody
 	public JsonResult changeIfEating(String boxId,HttpSession session) {
+		System.out.println("changeIfEating");
+		hanldDiff();
 	    Map<String,Object> data = new HashMap<String,Object>(16);
 	    data.put("boxId",boxId);
 	    data.put("userId", session.getAttribute("userId")==null?123:session.getAttribute("userId"));
@@ -452,7 +476,7 @@ public class RemaindController extends CommonController{
 			/*未来可以有选择添加几天的*/			
 			for(int k=0;k<remaindTime.size();k++) {		
 				Map<String,Object> data = new HashMap<String, Object>();
-				if(phone!=null&&"".equals(phone)&&"null".equals(phone)) {
+				if(phone!=null||"".equals(phone)||"null".equals(phone)) {
 					data.put("phone", phone);
 					//通过电话号码查询userId
 					//LscExchangeDb lsc = new LscExchangeDb();
@@ -462,10 +486,8 @@ public class RemaindController extends CommonController{
 					data.put("userId",l.get(0).get("userId"));
 				}	
 				Object userId = session.getAttribute("userId");
-				if(userId!=null) {
-					data.put("userId",userId);
-				}else {
-					data.put("userId", 123);
+				if(data.get("userId")==null) {
+					data.put("userId",userId==null?123:userId);
 				}
 				if(pillIdList.size()>0) {
 					data.put("pillId",pillIdList.get(0).get("pillId"));	

@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+
+    <title>智立方</title>
+    
+    <link rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/main.css"/>
+    
+</head>
+<body>
+<div class="topbar-wrap white">
+    <div class="topbar-inner clearfix">
+        <div class="topbar-logo-wrap clearfix">
+            <h1 class="topbar-logo none"><a href="index.html" class="navbar-brand">后台管理</a></h1>
+            <ul class="navbar-list clearfix">
+                <li><a class="on" href="index.html">智立方</a></li>   
+                <li><a class="on" href="../index.html">首页</a></li>    
+            </ul>
+        </div>
+        <div class="top-info-wrap">
+            <ul class="top-info-list clearfix">                
+              <li><a href="login.html">退出</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container clearfix">
+    <div class="sidebar-wrap">
+        <div class="sidebar-title">
+            <h1>菜单</h1>
+        </div>
+        <div class="sidebar-content">
+            <ul class="sidebar-list">
+                <li>
+                    <a href="#"><i class="icon-font">&#xe003;</i>常用操作</a>
+                    <ul class="sub-menu">
+                        <li><a href="billRecord.html"><i class="icon-font">&#xe008;</i>吃药记录</a></li>
+                        <li><a href="billNews.html"><i class="icon-font">&#xe005;</i>药品论坛</a></li>
+                        <li><a href="myCase.html"><i class="icon-font">&#xe006;</i>我的病历</a></li>
+                   <!-- <li><a href="design.html"><i class="icon-font">&#xe012;</i>评论管理</a></li>-->
+                        <li><a href="telemanagement.html"><i class="icon-font">&#xe052;</i>远程知晓</a></li>
+                        <!--<li><a href="design.html"><i class="icon-font">&#xe033;</i>广告管理</a></li>-->
+                    </ul>
+                </li>
+                <li>
+                    <a href="#"><i class="icon-font">&#xe018;</i>系统管理</a>
+                        <ul class="sub-menu">
+                    	<li><a href=""><i class="icon-font">&#xe012;</i>权限管理</a></li>
+                    	<li><a href="timedTask.html"><i class="icon-font">&#xe004;</i>定时留言</a></li>
+                        <li><a href="system.html"><i class="icon-font">&#xe017;</i>系统设置</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--/sidebar-->
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i>
+            	<a href="index.html">首页</a>
+            	<span class="crumb-step">&gt;</span>
+            	<a class="crumb-name" href="system.html">首页管理</a>
+            	<span class="crumb-step">&gt;</span>
+            	<span id="AddorEdit"></span>
+            </div>
+        </div>
+        <div class="result-wrap">
+            <div class="result-content">
+                <form action="/jscss/admin/design/add" method="post" id="myform" name="myform" enctype="multipart/form-data">
+                    <table class="insert-tab" width="100%">
+                        <tbody>
+                        	<!--<tr>
+                            <th width="120"><i class="require-red">*</i>分类：</th>
+                            <td>
+                                <select name="colId" id="catid" class="required">
+                                    <!--<option value="">请选择</option>
+                                    <option value="0">药片</option>
+                                    <option value="1">胶囊</option>
+                                    <option value="2">药丸</option>
+                                    <option value="3">冲剂</option>
+                                </select>
+                            </td>
+                        </tr>-->
+                            <tr>
+                                <th><i class="require-red">*</i>标题：</th>
+                                <td>
+                                    <input class="common-text required" id="title" name="title" size="50" value="" type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i class="require-red">*</i>时间：</th>
+                                <td><input class="common-text" name="author" size="50" value="" type="text" id="time"></td>
+                            </tr>
+                            <tr>
+                                <th><i class="require-red">*</i>内容：</th>
+                                <td><textarea class="" name="cron" value="" rows="20" cols="100" id="text"></textarea></td>
+                                <!--<td><input name="smallimg" id="" type="file"><!--<input type="submit" onclick="submitForm('/jscss/admin/design/upload')" value="上传图片"/></td>-->
+                            </tr>
+
+                            <tr>
+                                <th></th>
+                                <td>
+                                    <input class="btn btn-primary btn6 mr10" value="提交" type="button" onclick="insertNotic();">
+                                    <input class="btn btn6" onClick="history.go(-1)" value="返回" type="button">
+                                </td>
+                            </tr>
+                        </tbody></table>
+                        <input type="hidden" id="show" value=""/>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <!--/main-->
+</div>
+<script src="../js/jquery-2.1.0.js"></script>
+<script type="text/javascript" src="../js/json.js" ></script>
+<script>
+	var ip;
+$(function(){
+	ip = getIP();	
+$("#show").val(oneValues());
+checkAddOrEdit();
+})
+//判断是不是编辑
+function checkAddOrEdit(){
+	var id = $("#show").val();
+	//alert(id);
+	if(id){
+		//编辑 回填数据
+		$('#AddorEdit').html("编辑公告");
+		showEditNotic(id);
+	}else{
+		$('#AddorEdit').html("新增公告");
+	}
+}
+//接收一个值
+function oneValues(){
+var result;
+var url=window.location.search; //获取url中"?"符后的字串  
+if(url.indexOf("?")!=-1){
+result = url.substr(url.indexOf("=")+1);
+}
+return result;
+};
+
+/*
+ * 保存公告
+ */
+function insertNotic(){
+	var url = ip+"setting/insertNotic.do";
+	var title = $('title').val();
+	var time = $('time').val();
+	var text = $("#text").val();
+	var params = {
+		title:title,
+		time:time,
+		text:text
+	};
+	$.post(url,params,function(res){
+		if(res.state==1){
+			alert("save ok!");
+			window.location.href="system.html";
+		}
+	});
+}
+//根据id查询当前编辑信息
+function showEditNotic(id){
+	var url = "setting/showEditNotic.do";
+	var params = {
+			id:id
+	};
+	$.post(url,params,function(res){
+		if(res.state==1){
+			addEditNotic(res.data);
+		}
+	});
+}
+//动态添加公告信息
+function addEditNotic(data){
+	$('#title').val(data.title);
+	$('#time').val(data.time);
+	$('#text').val(data.text);
+}
+</script>
+</body>
+</html>

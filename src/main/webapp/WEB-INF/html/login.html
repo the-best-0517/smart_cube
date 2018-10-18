@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+<meta http-equiv="Pragma" content="no-cache"> 
+<meta http-equiv="Cache-Control" content="no-cache"> 
+<meta http-equiv="Expires" content="0"> 
+<title>登录</title>
+
+<link rel="stylesheet" type="text/css" href="../css/index.css"/>
+<link href="../css/login.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+		  <div class="header">
+                <div class="icon">
+                    <a href="/"><img src="img/logo.png" alt=""></a>
+                </div>
+                <div class="button">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </div>
+                <div class="nav">
+                    <ul>
+                        <li>
+                            <a href="../index.html"  target="_self">首页</a>
+                        </li>
+
+                        <li>
+                            <a href="login.html" class=on target="_self">登录</a>
+                        </li>
+
+                        <li>
+                            <a href="news.html"  target="_self">新闻动态</a>
+                        </li>
+                       
+                        <li>
+                            <a href="abouts.html"   target="_self">关于我们</a>
+                        </li>
+                        </ul>
+                </div>
+            </div>
+<div class="login_box">
+      <div class="login_l_img"><img src="images/login-img.png" /></div>
+      <div class="login">
+          <div class="login_logo"><a href="#"><img src="images/login_logo.png" /></a></div>
+          <div class="login_name">
+               <p>欢迎使用智立方智能药盒</p>
+          </div>
+        <div>
+              <input  id="account" name="username" type="text"  value="用户名" onfocus="this.value=''" onblur="if(this.value==''){this.value='用户名'}">
+              <span id="password_text" onclick="this.style.display='none';document.getElementById('password').style.display='block';document.getElementById('password').focus().select();" >密码</span>
+<input  name="password" type="password" id="password" style="display:none;" onblur="if(this.value==''){document.getElementById('password_text').style.display='block';this.style.display='none'};"/>
+          <p id="errorMsg"></p>
+             <input value="登录" style="width:100%;" onclick="loginSub();" type="button">
+         </div> 
+      </div>
+      <div class="copyright">Buu  技术支持电话：000-00000000</div>
+</div>
+<div style="text-align:center;">
+
+</div>
+	<script type="text/javascript" src="../js/jquery-2.1.0.js" ></script>
+	<script type="text/javascript" src="../js/json.js" ></script>
+	<script>
+		var ip ;
+					$(function(){
+						ip = getIP();
+					});
+			function loginSub(){		
+				debugger
+				var name = $('#account').val();
+				var pwd = $('#password').val();
+				var url = ip+"login/login.do";
+								
+				var loginParams = {
+					name:name,
+					pwd:pwd
+				}; 
+				$.post(url,loginParams,function(res){
+					if(res.state==1){                   
+					window.location.href="index.html";
+					}
+					if(res.state==0){						
+						$('#errorMsg').html("用户名或密码错误");
+					}
+				});
+			}
+	</script>
+</body>
+</html>
