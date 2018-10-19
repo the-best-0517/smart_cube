@@ -33,8 +33,8 @@
     <!-- 定义跳转的文件的前后缀 ，视图模式配置 -->
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <!-- 自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->
-        <property name="prefix" value="/WEB-INF/pages/" />
-        <property name="suffix" value=".jsp"></property>
+        <property name="prefix" value="/html/" />
+        <property name="suffix" value=".html"></property>
     </bean>  
     
     <!-- 文件上传需要配置此解析器 找类的快捷键为:ctrl+shift+t 查看本类方法：ctrl+o,假如想继续看父类方法继续ctrl+o -->

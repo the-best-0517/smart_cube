@@ -70,39 +70,57 @@
         </div>
         <div class="result-wrap">
             <div class="result-content">
-                <form action="/jscss/admin/design/add" method="post" id="myform" name="myform" enctype="multipart/form-data">
-                    <table class="insert-tab" width="100%">
+<!--                 <form action="/jscss/admin/design/add" method="post" id="myform" name="myform" enctype="multipart/form-data">
+ -->      
+ 			<form action="upload.do" method="post" enctype="multipart/form-data">
+               <table class="insert-tab" width="100%">
                         <tbody><tr>
                             <th width="120"><i class="require-red">*</i>分类：</th>
                             <td>
-                                <select name="colId" id="catid" class="required">
+                                <select name="colId" id="catid" class="required" >
                                     <!--<option value="">请选择</option>-->
-                                    <option value="0">药片</option>
-                                    <option value="1">胶囊</option>
-                                    <option value="2">药丸</option>
-                                    <option value="3">冲剂</option>
+                                    <option value="0">空腹</option>
+                                    <option value="1">饭前</option>
+                                    <option value="2">饭后</option>
                                 </select>
                             </td>
                         </tr>
                             <tr>
-                                <th><i class="require-red">*</i>标题：</th>
+                                <th><i class="require-red">*</i>准字：</th>
                                 <td>
-                                    <input class="common-text required" id="title" name="title" size="50" value="" type="text">
+                                    <input  required="required" class="common-text required" id="zFont" name="zFont" size="50" value="" type="text">
+                                </td>
+                            </tr>
+                              <tr>
+                                <th><i class="require-red">*</i>药品代码：</th>
+                                <td>
+                                    <input  required="required" class="common-text required" id="pillId" name="pillId" size="50" value="" type="text">
+                                </td>
+                            </tr>
+                               <tr>
+                                <th><i class="require-red">*</i>药名：</th>
+                                <td>
+                                    <input  required="required" class="common-text required" id="title" name="title" size="50" value="" type="text">
                                 </td>
                             </tr>
                             <tr>
-                                <th><i class="require-red">*</i>用法用量：</th>
-                                <td><input class="common-text" name="author" size="50" value="" type="text"></td>
+                                <th><i class="require-red">*</i>药品介绍：</th>
+                                <td><input  required="required" id="pillInstruction" class="common-text" name="pillInstruction" size="50" value="" type="text"></td>
                             </tr>
-                            <tr>
+                             <tr>
+                                <th><i class="require-red">*</i>用法用量：</th>
+                                <td><input  required="required" id="instructions" class="common-text" name="instructions" size="50" value="" type="text"></td>
+                            </tr>
+                         <!--    <tr>
                                 <th><i class="require-red">*</i>公司：</th>
                                 <td><input class="common-text" name="cron" size="50" value="" type="text"></td>
-                                <!--<td><input name="smallimg" id="" type="file"><!--<input type="submit" onclick="submitForm('/jscss/admin/design/upload')" value="上传图片"/></td>-->
-                            </tr>
+                                <td><input name="smallimg" id="" type="file"><!--<input type="submit" onclick="submitForm('/jscss/admin/design/upload')" value="上传图片"/></td>
+                            </tr> -->
                             <tr>
                                 <th>图片：</th>
                                 <td>
-                                	<input type="file" />
+                                <input type="file" multiple class="file" data-upload-url="http://localhost:8080/smart_cube/html/setting/upload.do"
+   									name="pictures" required="required">
                                 </td>
                             </tr>
                             <tr>
@@ -130,7 +148,6 @@ checkAddOrEdit();
 //判断是不是编辑
 function checkAddOrEdit(){
 	var id = $("#show").val();
-	alert(id);
 	if(id){
 		//编辑 回填数据
 		$('#AddorEdit').html("编辑药品信息");

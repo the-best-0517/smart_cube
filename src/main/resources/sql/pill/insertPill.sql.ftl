@@ -1,0 +1,21 @@
+replace into t_md_pill(
+	pill_id,
+	license_num,
+	pill_desc,
+	pill_instruction,
+	instructions,
+	create_time,
+	update_time,
+	where_eating,
+	img_path
+)values(
+	#{pill_id},
+	#{license_num},
+	#{pill_desc},
+	#{pill_instruction},
+	#{instructions},
+	now(),
+	now(),
+	#{where_eating},
+	#{img_path}
+) 
