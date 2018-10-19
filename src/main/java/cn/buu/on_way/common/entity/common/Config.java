@@ -17,8 +17,8 @@ public class Config
 
 	/**
 	 * 开发者注册后系统自动生成的TOKEN，可在官网登录后查看
-	 */
-	public static final String AUTH_TOKEN = "5ccb883843948bb8f03abdb009e80d3";
+	 */										 
+	public static final String AUTH_TOKEN = "55ccb883843948bb8f03abdb009e80d3";
 
 	/**
 	 * 响应数据类型, JSON或XML

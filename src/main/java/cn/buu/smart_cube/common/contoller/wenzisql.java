@@ -127,7 +127,7 @@ public class wenzisql {
 			    //转换为16进制
 			    for(int i=0;i<list.size();i++) {
 			    	Integer ten = binaryToDecimal(list.get(i));  //二进制转换为十进制   	
-			    	String hex = ten.toHexString(ten);				//十进制转换为二进制
+			    	String hex = Integer.toHexString(ten);				//十进制转换为二进制
 			    	if(hex.length()==1) {
 			    		hex = "0"+hex;
 			    	}

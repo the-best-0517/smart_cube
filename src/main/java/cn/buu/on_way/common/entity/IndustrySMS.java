@@ -19,18 +19,20 @@ public class IndustrySMS
 	private static String operation = "/industrySMS/sendSMS";
 
 	private static String accountSid = Config.ACCOUNT_SID;
-	private static String to = "18701198791";
-	private static String smsContent = "【智立方】尊敬的用户，您的验证码为{1}";
+	public static String to = "";
+	public static int code = (int)((Math.random()*9+1)*100000);
+	private static String smsContent = "【智立方】您的验证码："+code+"，如非本人操作，请忽略此短信。";
 
 	/**
 	 * 验证码通知短信
 	 */
 	public static void execute()
+		
 	{
 		String tmpSmsContent = null;
 	    try{
-	      tmpSmsContent = URLEncoder.encode(smsContent, "UTF-8");
-	    //tmpSmsContent = smsContent;
+	     // tmpSmsContent = URLEncoder.encode(smsContent, "UTF-8");
+	    tmpSmsContent = smsContent;
 	    }catch(Exception e){
 	      
 	    }
