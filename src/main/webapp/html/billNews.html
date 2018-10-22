@@ -65,16 +65,16 @@
                 <form action="#" method="post">
                     <table class="search-tab">
                         <tr>
-                            <th width="120">选择分类:</th>
+                       <!--      <th width="120">选择分类:</th>
                             <td>
                                 <select name="search-sort" id="">
                                     <option value="">全部</option>
                                     <option value="19">精品界面</option><option value="20">推荐界面</option>
                                 </select>
-                            </td>
+                            </td> -->
                             <th width="70">关键字:</th>
-                            <td><input class="common-text" placeholder="关键字" name="keywords" value="" id="" type="text"></td>
-                            <td><input class="btn btn-primary btn2" name="sub" value="查询" type="submit"></td>
+                            <td><input class="common-text" placeholder="关键字" name="keywords" value="" id="keywords" type="text"></td>
+                            <td><input class="btn btn-primary btn2" name="sub" value="查询" type="button" onclick="showpillMsg();"></td>
                         </tr>
                     </table>
                 </form>
@@ -85,16 +85,15 @@
                 <div class="result-title">
                     <div class="result-list">
                         <a href="insertBills.html"><i class="icon-font"></i>新增药品</a>
-						<a href=""><i class="icon-next"></i>批量删除</a>
+						<!-- <a href=""><i class="icon-next"></i>批量删除</a> -->
                     </div>
                 </div>
                 <div class="result-content">
-                    <table class="result-tab" width="100%">
+                    <table class="result-tab" width="100%" id="addpill" >
                         <tr> 
                         	<th></th>
                             <th>ID</th>
                             <th>药品</th>
-                            <th>公司</th>
                             <th>用法用量</th>                        
                             <th>更新时间</th>                            
                             <th>操作</th>
@@ -104,7 +103,6 @@
                             <td>59</td>
                             <td title=""><a target="_blank" href="#" title="">头孢西丁钠</a>
                             </td>
-                            <td>0</td>
                             <td>2</td>
                             <td>2014-03-15 21:11:01</td>
                             <td>
@@ -120,16 +118,73 @@
 </body>
 <script type="text/javascript" src="../js/jquery-2.1.0.js" ></script>
 <script>
-		$(".link-update").click(function(){
-		var id ="1";
-    	window.location.href="insertBills.html?valus="+id;  
-	});
+
 	$(function(){
 		showpillMsg();
 	});
 	/**
 	 * 展示药品信息
 	 */
+	function showpillMsg(){
+		var url = "../pill/showAllPill.do";
+		var key = $('#keywords').val();
+		$.post(url,{key:key},function(res){
+			if(res.state==1){
+				addPillMsg(res.data);
+			}
+		});
+	}
+	function addPillMsg(data){
+		var tr = '<tr>   '
+        +'	<td><input type="checkbox"/></td>'
+        +'   <td>[id]</td>'
+        +'    <td title=""><a target="_blank" href="#" title="">[pillDesc]</a>'
+        +'    </td>'
+        +'    <td>[instructions]</td>'
+        +'    <td>[updateTime]</td>'
+        +'    <td>'
+        +'        <a class="link-update" id="[pillId]" onclick="editPill1(this.id);">修改</a>'
+        +'        <a class="link-del" id="[pillId]" onclick="deletePill(this.id);">删除</a>'
+        +'    </td>'
+        +'</tr>';
+     var tr2 = '<tr> '
+      +   	'<th></th>'
+      +      '<th>ID</th>'
+      +      '<th>药品</th>'
+      +      '<th>用法用量</th>  '
+      +      '<th>更新时间</th>  '
+      +      '<th>操作</th>'
+      +		' </tr>';
+        $('#addpill').empty();
+        $('#addpill').append(tr2);
+        for(var i=0;i<data.length;i++){
+        	
+        	var t = tr.replace("[id]",data[i].id)
+        		  	  .replace("[pillDesc]",data[i].pillDesc)
+        		  	  .replace("[instructions]",data[i].instructions)
+        		   	  .replace("[pillId]",data[i].pillId)
+        		  	  .replace("[pillId]",data[i].pillId)
+        		   	  .replace("[updateTime]",new Date(data[i].updateTime).toLocaleDateString());
+        	$('#addpill').append(t);
+        }
+	}
+	/**删除*/
+	function deletePill(pillId){
+		var b = confirm("是否删除？");
+		if(b){
+			var url = "../pill/deletePill.do";
+			$.post(url,{pillId:pillId},function(res){
+				if(res.state==1){
+					alert("删除成功！");
+					showpillMsg();
+				}
+			});
+		}
 	
+	}
+	/**编辑**/
+	function editPill(pillId){
+		window.location.href="insertBills.html?valus="+pillId;  
+	}
 </script>
 </html>

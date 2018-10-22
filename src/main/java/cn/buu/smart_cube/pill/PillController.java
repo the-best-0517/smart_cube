@@ -20,6 +20,29 @@ import cn.buu.smart_cube.common.web.JsonResult;
 public class PillController extends CommonController{
 	 @Resource
 	 private ExchangeDbService exchangeDbService;
+	 
+	 
+	 @RequestMapping("/deletePill")
+	 @ResponseBody
+	 public JsonResult deletePill(String pillId) {
+		 System.out.println("deletePill");
+		 hanldDiff();
+		 Map<String,Object> data = new HashMap<String, Object>(16);	
+		 data.put("pillId", pillId);
+		 LscExchangeDb lsc = new LscExchangeDb();
+		 lsc.setData(data);
+		 lsc.setSqlPath("pill/deletePillBypillId");
+		 try {
+			 exchangeDbService.deleteDb(lsc);
+			 return new JsonResult();	
+		 }catch(Exception e) {
+			 e.printStackTrace();
+			 return new JsonResult("error");	
+		 }
+		 
+	 }
+	 
+	 
 	 /**
 	  * 保存药品评价 及其星级评价
 	  * @param starText	  几星

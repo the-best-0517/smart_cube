@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.buu.on_way.common.entity.IndustrySMS;
 import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.contoller.CommonController;
@@ -34,6 +35,35 @@ public class LoginController extends CommonController{
 	private ExchangeDbService exchangeDbService;
 	@Resource
 	private CommonServiceImpl commonServiceImpl;
+	
+	/**
+	 * 检测此手机号是否注册过
+	 * @param phone
+	 * @return
+	 */
+	@RequestMapping("/checkPhone")
+	@ResponseBody
+	public boolean checkPhone(String phone) {
+		System.out.println("checkPhone");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String,Object>();
+		data.put("phone", phone);
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("login/checkPhone");
+		try {
+			List<Map<String,Object>> list = exchangeDbService.selectDb(lsc);
+			System.out.println("list:"+list);
+			if(!list.isEmpty()&&list.size()>0) {
+				return false;	
+			}
+			return true;	
+		}catch(Exception e) {
+			e.printStackTrace();
+			return false;	
+		}		
+	}
+	
 	
 	/**
 	 * 查询buleMac 连接蓝牙用
@@ -159,7 +189,8 @@ public class LoginController extends CommonController{
 	public JsonResult savaUser(String userName,String pwd,String phone,String email) {
 		System.out.println("savaUser");
 		hanldDiff();
-		if(!"1234".equals(email)) {
+		Integer code = IndustrySMS.code;
+		if(email.equals(code)) {
 			return new JsonResult("验证码错误");
 		}
 		long userId = commonServiceImpl.getOnlyKey(); 

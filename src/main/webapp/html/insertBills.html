@@ -123,6 +123,7 @@
    									name="pictures" required="required">
                                 </td>
                             </tr>
+                            <img src="" id="pillImg">
                             <tr>
                                 <th></th>
                                 <td>
@@ -147,9 +148,10 @@ checkAddOrEdit();
 })
 //判断是不是编辑
 function checkAddOrEdit(){
-	var id = $("#show").val();
-	if(id){
+	var pillId = $("#show").val();
+	if(pillId){
 		//编辑 回填数据
+		showNowPillMsg(pillId);
 		$('#AddorEdit').html("编辑药品信息");
 	}else{
 		$('#AddorEdit').html("新增药品信息");
@@ -165,6 +167,27 @@ result = url.substr(url.indexOf("=")+1);
 return result;
 };
 
+/*
+ * 回填当前药品数据
+ */
+ function showNowPillMsg(pillId){
+		var url = "../remiand/findPillMsgByPillId.do";
+		var params = {
+			pillId:pillId
+		};
+		$.post(url,params,function(res){
+			
+			if(res.state==1){
+				//回填
+				$('#zFont').val(res.data[0].licenseNum);
+				$('#pillId').val(res.data[0].pillId);
+				$('#title').val(res.data[0].pillDesc);
+				$('#pillInstruction').val(res.data[0].pillInstruction);
+				$('#instructions').val(res.data[0].instructions);
+				$('#pillImg').attr("src","http://120.79.10.49:8080/smart_cube/"+res.data[0].pillImg);
+			}
+		});
+}
 </script>
 </body>
 </html>

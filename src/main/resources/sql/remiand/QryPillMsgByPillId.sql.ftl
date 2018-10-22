@@ -1,4 +1,7 @@
-select pill_id as pillId,pill_desc as pillDesc,
+select 
+license_num as licenseNum,
+pill_id as pillId,
+pill_desc as pillDesc,
 instructions,
 where_eating ,
 pill_instruction as pillInstruction,
