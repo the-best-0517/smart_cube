@@ -15,8 +15,51 @@
     			line-height: 50px;
     	}
     	.list-group-item{
-    		border: 1px solid #000;
+    		border-bottom: 1px solid #000;
     	}
+    	.panel-heading{
+    	    border-bottom: 1px solid #000;
+    	}
+    	/* .box-wrap {    	    
+            text-align: center;
+            background-color: #f9f9f9;
+            overflow: hidden; 
+            border: 0px solid #fff;
+         } */
+       .seeCase-myCase {
+            border: 0px solid #000;
+        }
+       .box {
+            text-align: center;
+            width: 20%;
+            height:4px;
+            padding-bottom: 26%;
+            margin-left: 33px;
+            border-radius: 2%;
+            float: left;
+            background-color: #f9f9f9;
+            border: 1px solid #000;
+         }
+       .result-list a {
+            margin-right: 15px;
+            float: right;
+          }
+       #popupcontent{ 
+            position: absolute; 
+            visibility: hidden; 
+            overflow: hidden; 
+            border:1px solid #232221; 
+            background-color:#eff3f3; 
+            padding:5px; 
+            margin-left: 278px;
+      } 
+      .check{
+            width: 20px;
+            height: 20px;
+            float: left;
+            margin-top: -28px;
+            margin-left: 204px
+      }
     </style>
 </head>
 <body>
@@ -66,30 +109,207 @@
         </div>
     </div>
     <!--/sidebar-->
-    <div class="main-wrap">
+    <div class="main-wrap" id="mainWrap">
 
         <div class="crumb-wrap">
             <div class="crumb-list"><i class="icon-font"></i><a href="index.html">首页</a><span class="crumb-step">&gt;</span><span class="crumb-name">我的病例</span></div>
         </div>
-        <div class="seeCase-myCase">
-        	<div class="panel panel-default">
-	<div class="panel-heading">病例标题</div>
-	<div class="panel-body">
-		<p>
-			图片
-		</p>
-	</div>
-	<ul class="list-group">
-		<li class="list-group-item">2018-08-08</li>
-		<li class="list-group-item">病情描述</li>
-		<li class="list-group-item">所吃药品</li>
-		<li class="list-group-item">等</li>
-		<li class="list-group-item">等</li>
-	</ul>
-</div>
-       </div>
+        <div class="result-title">
+             <div class="result-list" onclick="deleteBox();">
+                 <a><i class="icon-font"></i>删除</a>
+            </div>
+            <div class="result-list" onclick="showPopup(600,500,-1);">
+                 <a><i class="icon-font"></i>新增病历</a>
+            </div>            
+        </div>
+        <div class="seeCase-myCase" id="addBox" >
+        	<!-- <div class="box-wrap"> -->
+	        <div class="box" id="box0" onclick="showPopup(600,500,0);">	           
+	           <ul class="panel-heading">病例标题</ul>
+	           <ul class="list-group">
+		           <li class="list-group-item">2018-08-08</li>
+		           <li class="list-group-item">病情描述</li>
+		           <li class="list-group-item">所吃药品</li>
+		           <li class="list-group-item">等</li>
+		           <li class="list-group-item">等</li>
+	           </ul>
+	           <div><input class="check" id="check0" type="checkbox" style="display:none"/></div>
+	        </div>
+	        <!-- <div class="panel-body">
+		       <p>
+			         图片
+		       </p>
+	        </div> -->
+           <!-- </div> -->
+        </div>
     </div>
     <!--/main-->
+    <div id="popupcontent">
+        <div style="margin-top:30px">
+           <a style="padding-left:20px;padding-right:20px;">病例标题</a>
+           <input type="text" name="title" id="title" style="background:#fff;border:1px solid #eae8e8;width:78%;"/>
+        </div>
+        <div style="margin-top:30px">
+           <a style="padding-left:49px;padding-right:20px;">时间</a>
+           <input type="datetime" name="time" id="time" style="background:#fff;border:1px solid #eae8e8;width:78%;"/>
+        </div>
+        <div style="margin-top:30px">
+           <div><a style="padding-left:20px;padding-right:20px;">病情描述</a></div>
+           <textarea rows="3" name="describe" id="describe" cols="78" style="width:78%;margin-left: 101px;margin-top: -20px;"></textarea>
+        </div>
+        <div style="margin-top:30px">
+           <div><a style="padding-left:20px;padding-right:20px;">所吃药品</a></div>
+           <textarea rows="3" name="pill" id="pill" cols="20" style="width: 28%;height: 65px;margin-left: 101px;margin-top: -20px;"></textarea>
+        </div>
+        <div style="margin-top:30px">
+           <a style="padding-left:49px;padding-right:20px;">图片</a>
+           <input type="image" name="picture" id="picture" style="background:#fff;border:1px solid #eae8e8;width:78%;"/>
+        <div style="margin-top: 80px;margin-left: 388px;">
+            <input type="button" name="save" id="save" value="确定" onclick="createBox();" style="width: 70px;height: 31px;margin-right: 42px;"/>
+            <input type="button" name="cancle" id="cancle" value="取消" onclick="hidePopup();" style="width: 70px;height:  31px;"/>
+        <div>
+        </div>
+    </div>
 </div>
 </body>
+<script type="text/javascript" src="../js/jquery-2.1.0.js" ></script>
+<script>
+var baseText = null; 
+var index = 1;
+var flags = new Array();
+/**
+ * 新增/编辑功能
+ */
+function showPopup(w,h,s){ 
+   var boxName = '#box'+s+' ul';
+   var boxInput = '#box'+s+' div input';
+   if($(boxInput).is(':checked')){
+	   flags[s] = true;
+	    return;
+   }
+   if(flags[s]){
+	   flags[s]=false;
+	   return;
+   }
+   var popUp = document.getElementById("popupcontent"); 
+   popUp.style.top = "150px"; 
+   popUp.style.left = "150px"; 
+   popUp.style.width = w + "px"; 
+   popUp.style.height = h + "px"; 
+   popUp.style.visibility = "visible"; 
+
+   var main = document.getElementById("mainWrap"); 
+   main.style.opacity="0.3";
+   var title="";
+   var time="";
+   var describe="";
+   var pill="";
+   var picture="";
+   var arr = new Array();
+   if(s!=-1){
+	   
+	  for(var i =0 ;i<2;i++){
+		 title = $(boxName).eq(0).html();
+		 if(i==1){
+			 for(var j =0 ;j<$(boxName).eq(1).find("li").length;j++){
+				 arr[j]=$(boxName).eq(1).find("li").eq(j).html();
+			 }
+		 }
+	   }
+	 	time = arr[0];
+	 	describe = arr[1];
+	 	pill = arr[2];
+	 	$("#title").val(title);
+	 	$("#time").val(time);
+	 	$("#describe").val(describe);
+	 	$("#pill").val(pill);
+	 	//后台编辑功能
+     }else{
+	    $("#title").val("");
+	    $("#time").val("");
+	    $("#describe").val("");
+	    $("#pill").val("");
+     }
+ 
+
+} 
+
+function hidePopup(){ 
+var popUp = document.getElementById("popupcontent"); 
+popUp.style.visibility = "hidden"; 
+var main = document.getElementById("mainWrap"); 
+main.style.opacity="1";
+} 
+
+function createBox(){
+	var title="";
+	var time="";
+	var describe="";
+	var pill="";
+    var picture="";
+    title = $("#title").val();
+    time =  $("#time").val();
+    describe =  $("#describe").val();
+    pill = $("#pill").val();
+    
+    var content = '<div class="box" id="box'+index+'" onclick="showPopup(600,500,'+index+');">'
+                 +'<ul class="panel-heading">'+title+'</ul>'
+                 +'<ul class="list-group">'
+                 +'  <li class="list-group-item">'+time+'</li>'
+                 +'  <li class="list-group-item">'+describe+'</li>'
+                 +'  <li class="list-group-item">'+pill+'</li>'
+                 +'  <li class="list-group-item">等</li>'
+                 +'  <li class="list-group-item">等</li>'
+                 +'</ul>'
+                 +'<div><input class="check" id="check'+index+'" type="checkbox" style="display:none"/></div>'
+                 +'</div>';
+    $('#addBox').append(content);
+    index++;
+    //添加保存功能
+    hidePopup();
+}
+
+var flag = 0;
+
+function deleteBox(){
+	var ids = new Array();
+	$("input[type = checkbox]").each(function(){
+		var name = $(this).attr("id");
+		if(document.getElementById(name).checked){
+			ids.push(name);
+        }
+		
+	});
+	var idstr=ids.join(',');
+	if(idstr==""){
+		if(flag%2==0){
+			$("input[type = checkbox]").each(function(){
+			    $(this).show();
+			});
+		    flag++;
+		}else if(flag%2==1){
+			$("input[type = checkbox]").each(function(){
+				var name = $(this).attr("id");
+				if(document.getElementById(name).checked){
+					 $(this).show();
+				}else{
+					 $(this).hide();
+				}		   
+			});
+		    flag++;
+		}
+	}else{
+		var a = confirm("确定删除此病历?");
+		if(a){
+			for(var i=0;i<ids.length;i++){
+				var ps = "#"+ids[i];
+				//模拟删除
+				$(ps).parent().parent().remove();
+			}
+		}	
+	}	
+	
+}
+
+</script>
 </html>
