@@ -35,6 +35,38 @@ public class RemaindController extends CommonController{
 	private HttpSession session;
 	
 	
+	
+	@RequestMapping("/showEatRemaind")       
+	 @ResponseBody
+	 public JsonResult showEatRemaind() {
+	  System.out.println("showEatRemaind");
+	  hanldDiff();
+	  Map<String,Object> data = new HashMap<String, Object>();
+	  List<Map<String,Object>> list = null;
+	  data.put("userId",session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+	  System.out.println("userId:"+session.getAttribute("userId"));
+	   LscExchangeDb lsc = new LscExchangeDb();
+	   lsc.setData(data);
+	   lsc.setSqlPath("remiand/QryEatRemaind");  
+	  try {
+	   list = exchangeDbService.selectDb(lsc);
+	   System.out.println("EatRemindList:"+list);
+	  }catch(Exception e) {
+	   e.printStackTrace();
+	  }
+	  return new JsonResult(list);
+	  
+	 }
+	
+	
+	
+	/**
+	 * 更新提醒时间
+	 * @param futrueTime
+	 * @param boxId
+	 * @param session
+	 * @return
+	 */
 	@RequestMapping("/upRemindTime")
 	@ResponseBody
 	public JsonResult upRemindTime(String futrueTime,String boxId,HttpSession session) {

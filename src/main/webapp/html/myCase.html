@@ -118,9 +118,9 @@
              <div class="result-list" onclick="deleteBox();">
                  <a><i class="icon-font"></i>删除</a>
             </div>
-            <div class="result-list" onclick="showPopup(600,500,-1);">
+   <!--          <div class="result-list" onclick="showPopup(600,500,-1);">
                  <a><i class="icon-font"></i>新增病历</a>
-            </div>            
+            </div>  -->           
         </div>
         <div class="seeCase-myCase" id="addBox" >
         	<!-- <div class="box-wrap"> -->
@@ -135,12 +135,6 @@
 	           </ul>
 	           <div><input class="check" id="check0" type="checkbox" style="display:none"/></div>
 	        </div>
-	        <!-- <div class="panel-body">
-		       <p>
-			         图片
-		       </p>
-	        </div> -->
-           <!-- </div> -->
         </div>
     </div>
     <!--/main-->
@@ -157,16 +151,18 @@
            <div><a style="padding-left:20px;padding-right:20px;">病情描述</a></div>
            <textarea rows="3" name="describe" id="describe" cols="78" style="width:78%;margin-left: 101px;margin-top: -20px;"></textarea>
         </div>
-        <div style="margin-top:30px">
+<!--         <div style="margin-top:30px">
            <div><a style="padding-left:20px;padding-right:20px;">所吃药品</a></div>
            <textarea rows="3" name="pill" id="pill" cols="20" style="width: 28%;height: 65px;margin-left: 101px;margin-top: -20px;"></textarea>
-        </div>
+        </div> -->
         <div style="margin-top:30px">
            <a style="padding-left:49px;padding-right:20px;">图片</a>
-           <input type="image" name="picture" id="picture" style="background:#fff;border:1px solid #eae8e8;width:78%;"/>
-        <div style="margin-top: 80px;margin-left: 388px;">
-            <input type="button" name="save" id="save" value="确定" onclick="createBox();" style="width: 70px;height: 31px;margin-right: 42px;"/>
-            <input type="button" name="cancle" id="cancle" value="取消" onclick="hidePopup();" style="width: 70px;height:  31px;"/>
+           <div id="addPicture">
+             <input type="image" name="picture" id="picture" style="background:#fff;border:1px solid #eae8e8;width:18%;" src="images/logo.png"/>
+           </div>
+                 <div style="margin-top: 80px;margin-left: 388px;">
+           <!--  <input type="button" name="save" id="save" value="确定" onclick="createBox();" style="width: 70px;height: 31px;margin-right: 42px;"/>
+ -->            <input type="button" name="cancle" id="cancle" value="取消" onclick="hidePopup();" style="width: 70px;height:  31px;"/>
         <div>
         </div>
     </div>
@@ -177,10 +173,26 @@
 var baseText = null; 
 var index = 1;
 var flags = new Array();
+
+function addPicture(data){
+	var img ='  <input type="image" name="picture" id="picture" style="background:#fff;border:1px solid #eae8e8;width:18%;" src="[imgPath]"/>';
+	for(var i=0;i<data.length;i++){
+	   var i = img.replace("[imgPath]","http://120.79.10.49:8080/smart_cube/"+data[i].imgPath);
+	   $('#addPicture').append(i);
+	}
+} 
 /**
  * 新增/编辑功能
  */
-function showPopup(w,h,s){ 
+function showPopup(w,h,s,caseId){
+	$('#addPicture').empty();
+	var url = "../case/showCaseImg.do";
+	$.post(url,{caseId:caseId},function(res){
+		if(res.state==1){
+			 addPicture(res.data);
+		}
+	});
+	
    var boxName = '#box'+s+' ul';
    var boxInput = '#box'+s+' div input';
    if($(boxInput).is(':checked')){
@@ -310,6 +322,40 @@ function deleteBox(){
 	}	
 	
 }
-
+$(function(){
+	showAllCase();
+});
+/**
+ * 展示所有case
+ */
+ function showAllCase(){
+  	var url = "../case/showAllCase.do";
+  	$.get(url,function(res){
+  		if(res.state==1){
+  			addCase(res.data);
+  		}
+  	});
+}
+function addCase(data){
+	var div='  <div class="box" id="box0" >	   '        
+	    + '   <ul class="panel-heading" id="[caseId]" onclick="showPopup(600,500,0,this.id);">[title]</ul>'
+	    +  '  <ul class="list-group">'
+		+ '         <li class="list-group-item">[time]</li>'
+		+  '         <li class="list-group-item">[describe]</li>'
+/* 		+  '         <li class="list-group-item"[pill]</li>'
+		+  '         <li class="list-group-item">等</li>'
+		+  '         <li class="list-group-item">等</li>' */
+	    +   '  </ul>'
+	    +  '   <div><input class="check" id="check0" type="checkbox" style="display:none"/></div>'
+	  	+  ' </div>';
+	$("#addBox").empty();
+	for(var i=0;i<data.length;i++){
+		var d = div.replace("[title]",data[i].caseHospital)
+				   .replace("[caseId]",data[i].caseId)
+				   .replace("[describe]",data[i].caseDesc)
+				   .replace("[time]",new Date(data[i].caseTime).toLocaleString());
+		$("#addBox").append(d);	
+	}
+}
 </script>
 </html>
