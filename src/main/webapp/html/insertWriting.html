@@ -89,6 +89,7 @@
                                 <th><i class="require-red">*</i>标题：</th>
                                 <td>
                                     <input class="common-text required" id="title" name="title" size="50" value="" type="text">
+                                    <input id="writingId" type="hidden">
                                 </td>
                             </tr>
                             <tr>
@@ -132,10 +133,10 @@ function checkAddOrEdit(){
 	//alert(id);
 	if(id){
 		//编辑 回填数据
-		$('#AddorEdit').html("编辑公告");
+		$('#AddorEdit').html("编辑文章");
 		showEditNotic(id);
 	}else{
-		$('#AddorEdit').html("新增公告");
+		$('#AddorEdit').html("新增文章");
 	}
 }
 //接收一个值
@@ -152,11 +153,14 @@ return result;
  * 保存文章
  */
 function insertNotic(){
-	var url = ip+"setting/insertWriting.do";
+	debugger;
+	var url = "../setting/insertWriting.do";
+	var writingId = $('#writingId').val();
 	var title = $('#title').val();
 	var time = $('#time').val();
 	var text = $("#text").val();
 	var params = {
+		writingId:writingId,
 		title:title,
 		time:time,
 		text:text
@@ -170,7 +174,7 @@ function insertNotic(){
 }
 //根据id查询当前编辑信息
 function showEditNotic(id){
-	var url = "setting/showEditWriting.do";
+	var url = "../setting/showEditWriting.do";
 	var params = {
 			id:id
 	};
@@ -182,9 +186,11 @@ function showEditNotic(id){
 }
 //动态添加公告信息
 function addEditNotic(data){
-	$('#title').val(data.title);
-	$('#time').val(data.time);
-	$('#text').val(data.text);
+	console.log(data)
+	$('#writingId').val(data[0].writingId);
+	$('#title').val(data[0].title);
+	$('#time').val(new Date(data[0].time).toLocaleString());
+	$('#text').val(data[0].text);
 }
 </script>
 </body>

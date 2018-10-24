@@ -25,6 +25,30 @@ public class IndexSetController extends CommonController{
 		private CommonServiceImpl commonServiceImpl;
 		
 		
+		@RequestMapping("/showAllWriting")
+		@ResponseBody
+		public JsonResult showAllWriting() {
+			System.out.println("showAllWriting");
+			hanldDiff();
+			
+			LscExchangeDb lsc = new LscExchangeDb();
+			lsc.setSqlPath("setting/QryAllWriting");
+			try {
+				List<Map<String,Object>> list = exchangeDbServiceImpl.selectDbNoParam(lsc);
+				return new JsonResult(list);
+			}catch(Exception e) {
+				e.printStackTrace();
+				return new JsonResult("error");
+			}
+			
+		}
+		
+		
+		/**
+		 * 通过id查询文章信息
+		 * @param id
+		 * @return
+		 */
 		@RequestMapping("/showEditWriting")
 		@ResponseBody
 		public JsonResult showEditWriting(String id) {
@@ -52,10 +76,15 @@ public class IndexSetController extends CommonController{
 		 */
 		@RequestMapping("/insertWriting")
 		@ResponseBody
-		public JsonResult insertWriting(String title,String time,String text) {
+		public JsonResult insertWriting(String title,String time,String text,String writingId) {
 			System.out.println("insertWriting");
 			hanldDiff();
-			long key = commonServiceImpl.getOnlyKey();
+			long key;
+			if(writingId==null||writingId.length()==0) {
+				key = commonServiceImpl.getOnlyKey();
+			}else {
+				key = Long.parseLong(writingId);
+			}
 			Map<String,Object> data = new HashMap<String,Object>();
 			data.put("writingId", key);
 			data.put("writingTitle",title);
@@ -125,8 +154,13 @@ public class IndexSetController extends CommonController{
 		 */
 		@RequestMapping("/insertNotic")
 		@ResponseBody
-		public JsonResult insertNotic(String title,String time,String text) {
-			long key = commonServiceImpl.getOnlyKey();
+		public JsonResult insertNotic(String title,String time,String text,String noticId) {
+			long key;
+			if(noticId.length()==0||noticId==null) {
+				key = commonServiceImpl.getOnlyKey();
+			}else {
+				key = Long.parseLong(noticId);
+			}
 			Map<String,Object> data = new HashMap<String,Object>();
 			data.put("noticId", key);
 			data.put("noticTitle",title);

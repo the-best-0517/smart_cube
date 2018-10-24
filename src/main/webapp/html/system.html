@@ -1,4 +1,4 @@
-<!doctype html>
+4<!doctype html>
 <html>
 <head>
     <meta charset="UTF-8"/>
@@ -117,12 +117,12 @@
             <form name="myform" id="myform" method="post">
                 <div class="result-title">
                     <div class="result-list">
-                        <a href="insertNotic.html"><i class="icon-font"></i>新增自媒文章</a>
+                        <a href="insertWriting.html"><i class="icon-font"></i>新增自媒文章</a>
 						<a href=""><i class="icon-next"></i>批量删除</a>
                     </div>
                 </div>
                 <div class="result-content">
-                    <table class="result-tab" width="100%">
+                    <table class="result-tab" width="100%" id="addWriting">
                         <tr> 
                         	<th></th>
                             <th>ID</th>
@@ -133,7 +133,7 @@
                         <tr>   
                         	<td><input type="checkbox"/></td>
                             <td>59</td>
-                            <td title=""><a target="_blank" href="insertNotic.html?id="+55 title="">头孢西丁钠xxxx</a>
+                            <td title=""><a target="_blank" href="insertWriting.html?id=555" title="">头孢西丁钠xxxx</a>
                             </td>
                             <td>2014-03-15 21:11:01</td>
                             <td>
@@ -153,12 +153,13 @@
 <script>
 	$(function(){
 		showAllNotic();
+		showAllWriting();
 	});
 /*
  * 加载公告
  */
 function showAllNotic(){
-	var url = ip+"setting/showAllNotic.do";
+	var url = "../setting/showAllNotic.do";
 	$.get(url,function(res){
 		if(res.state==1){
 			addAllNotic(res.data);
@@ -167,22 +168,32 @@ function showAllNotic(){
 }
 function addAllNotic(data){
 	var addNotic = $('#addNotic');
-	var tr  = 	 '    <tr>   
-            +    '         	<td><input type="checkbox"/></td>
-            +    '            <td>[id]</td>
-            +    '          <td title=""><a target="_blank" href="insertNotic.html" title="">[noticTitle]</a>
-            +    '            </td>
-            +    '            <td>[createTime]</td>
-            +    '           <td>
-            +    '                <a class="link-update" href="#" id="[id]" onclick="editNotic(this.id)">修改</a>
-            +    '                <a class="link-del" href="#">删除</a>
-            +    '           </td>
+	var tr  = 	 '    <tr>   '
+            +    '         	<td><input type="checkbox"/></td>'
+            +    '            <td>[id]</td>'
+            +    '          <td title=""><a  title="">[noticTitle]</a>'
+            +    '            </td>'
+            +    '            <td>[createTime]</td>'
+            +    '           <td>'
+            +    '                <a class="link-update" href="#" id="[id]" onclick="editNotic(this.id)">修改</a>'
+            +    '                <a class="link-del" href="#">删除</a>'
+            +    '           </td>'
             +    '       </tr>';
+      
+    var thead = '<tr> '
+    	+'<th></th>'
+        +'<th>ID</th>'
+        +'<th>标题</th>'
+        +'<th>标签</th> '                       
+        +'<th>操作</th>'
+   +' </tr>';
+            addNotic.empty();
+            addNotic.append(thead); 
            for(var i=0;i<data.length;i++){
            	   var t = tr.replace("[id]",data[i].id)
            	   			.replace("[id]",data[i].id)
            	   			.replace("[noticTitle]",data[i].noticTitle)
-           	   			.replace("[createTime]",data[i].createTime);
+           	   			.replace("[createTime]",new Date(data[i].createTime).toLocaleString());
            	   addNotic.append(t); 
            }
    
@@ -190,6 +201,53 @@ function addAllNotic(data){
 function editNotic(id){
 window.location.href = "insertNotic.html?id="+id;
 }
+
+
+/**
+ * 加载全部自媒体号
+ */
+function showAllWriting(){
+	var url = "../setting/showAllWriting.do";
+	$.get(url,function(res){
+		if(res.state==1){
+			addAllWriting(res.data);
+		}
+	})
+}
+function addAllWriting(data){
+	var addWriting = $('#addWriting');
+    var thead = '<tr> '
+    	+'<th></th>'
+        +'<th>ID</th>'
+        +'<th>标题</th>'
+        +'<th>标签</th> '                       
+        +'<th>操作</th>'
+   +' </tr>';
+	var tr = '<tr>   '
+    +	'<td><input type="checkbox"/></td>'
+    +    '<td>[id]</td>'
+   +     '<td title=""><a title="">[writingTitle]</a>'
+   +     '</td>'
+   +     '<td>[createTime]</td>'
+   +     '<td>'
+   +     '    <a class="link-update" href="#" id="[id]" onclick="editWriting(this.id);">修改</a>'
+   +     '    <a class="link-del" href="#" id="[id]" onclick="delWriting(this.id);">删除</a>'
+   +     '</td>'
+   + '</tr>';
+   addWriting.empty();
+   addWriting.append(thead);
+   for(var i=0;i<data.length;i++){
+	   t = tr.replace("[id]",data[i].id)
+	 		 .replace("[id]",data[i].id)
+	   		 .replace("[id]",data[i].id)
+	   		 .replace("[writingTitle]",data[i].writingTitle)
+	   		 .replace("[createTime]",new Date(data[i].createTime).toLocaleString());
+	   addWriting.append(t); 
+   }
+}
+function editWriting(id){
+	window.location.href = "insertWriting.html?id="+id;
+	}
 </script>
 </body>
 </html>
