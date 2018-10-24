@@ -8,7 +8,23 @@
       <link rel="stylesheet" type="text/css" href="css/style.css"/>
     <link rel="stylesheet" type="text/css" href="../css/common.css"/>
     <link rel="stylesheet" type="text/css" href="../css/main.css"/>
-   
+    <style>
+       #remaindPill{
+          position:static !important;
+       }
+       .list{
+       	height:1000px !important;
+       }
+       #eatfalse{
+       	color:red;
+       }
+       #year{
+       	    width: 75px;
+		    height: 35px;
+		    color: #58a6fb;
+		    background: black;
+       }
+    </style>
 </head>
 <body>
 <div class="topbar-wrap white">
@@ -62,9 +78,9 @@
         <div class="crumb-wrap">
             <div class="crumb-list"><i class="icon-font"></i><a href="index.html">首页</a><span class="crumb-step">&gt;</span><span class="crumb-name">吃药记录</span></div>
         </div>
-       <div class="search-bill">
+   <!--     <div class="search-bill">
        		<iframe name="" frameborder="0" scrolling="no" marginwidth="0" marginheight="0"  width="50%" height="70" src="timeRecord.html"></iframe>
-       </div>
+       </div> -->
      	<div class="content">
 	<div class="wrapper">
 		<div class="light"><i></i></div>
@@ -73,20 +89,25 @@
 		<div class="main">
 			<h1 class="title">吃药记录</h1>		
 			<div class="year">
-				<h2><a href="#">2018年<i></i></a></h2>
+				<h2><select id="year">
+					  <option >2018</option>
+					  <option >2017</option>
+					  <option >2016</option>
+					  <option >2015</option>
+					</select></h2>
 				<div class="list">
-					<ul>
+					<ul id="remaindPill" style="">
 						<li class="cls" id="">
-							<p class="date">3月5日</p>
-							<p class="date">8:00</p>
-							<p class="intro">头孢西丁钠&nbsp;&nbsp;&nbsp;用量：1</p>
-							<p class="date">8:00</p>
-							<p class="intro">头孢&nbsp;&nbsp;&nbsp;用量：1</p>
-							<p class="date">12:00</p>
-							<p class="intro">头孢西丁钠&nbsp;&nbsp;&nbsp;用量：1</p>
-							<p class="date">12:00</p>
-							<p class="intro" style="color: red;">头孢&nbsp;&nbsp;&nbsp;用量：1</p>
-						</li>
+					       <p  class="date">3月5日</p>
+					       <p  class="date">8:00</p>
+					       <p  class="intro">头孢西丁钠&nbsp;&nbsp;&nbsp;用量：1</p>
+       
+       
+   					   </li>
+						
+						
+						</ul>
+						
 			</div>	
 			
 				
@@ -106,6 +127,112 @@ $(".main .year>h2>a").click(function(e){
 	e.preventDefault();
 	$(this).parents(".year").toggleClass("close");
 });
+
+$(function(){
+	
+	showpillRecord();
+	showOption();
+});
+
+$("#year").change(function(){
+	showpillRecord();
+});
+
+ function showOption(){
+	 var url = "../remiand/showEatRemaind.do";
+
+	$.get(url,function(res,status){
+		var data=res.data;
+		
+	      
+        $('#year').empty();
+        var y=data[0].year;
+        var op='<option>'+data[0].year+'</option>';
+        for(var i=1;i<data.length;i++){
+         if(y!=data[i].year){
+          op=op+'<option>'+data[i].year+'</option>';
+         }
+        }
+        $('#year').append(op);
+      
+	});
+	
+} 
+
+
+
+/**
+ * 展示吃药记录
+ */
+function showpillRecord(){
+	
+	 var url = "../remiand/showEatRemaind.do";
+	 console.log("成功");
+	$.get(url,function(res,status){
+		
+	    
+	      
+	      $('#remaindPill').empty();
+	        var data=res.data;
+	        var y=data[0].year;
+	    
+	
+	    	
+	    		  
+			var myselect=document.getElementById("year");
+			var index=myselect.selectedIndex ;  
+			var opValue= myselect.options[index].value;
+			
+			var opText= myselect.options[index].text;
+	
+			var li;
+			var j;
+			for(var i=0;i<data.length;i++){
+				if(opText==data[i].year){
+					li='<li class="cls" id="">'
+						+'<p  class="date">'+data[i].date+'</p>'
+						+'<p  class="date">'+data[i].time+'</p>'
+						+'<p id="eat'+data[i].isEating+'" class="intro">'+data[i].pillDesc+'&nbsp;&nbsp;&nbsp;用量：'+data[i].dose+'</p>'
+						j=i;
+						break;
+				}
+			}
+			
+	    	  
+	    	  
+					
+	    	   for(var i=j+1;i<data.length;i++){
+	    		   var a=data[i-1].date;
+	    		   if(opText==data[i].year&&a==data[i].date){
+	    			   li=li+'<p  class="date">'+data[i].time+'</p>'
+	    			  	 +'<p id="eat'+data[i].isEating+'" class="intro">'+data[i].pillDesc+'&nbsp;&nbsp;&nbsp;用量：'+data[i].dose+'</p>'
+	    			 
+	    		   }else if(opText==data[i].year&&a!=data[i].date){
+	    			  li=li+'</li>'
+	    			   li=li+'<li class="cls" id="">'
+	   					+'<p  class="date">'+data[i].date+'</p>'
+	   					+'<p  class="date">'+data[i].time+'</p>'
+	   					+'<p  id="eat'+data[i].isEating+'" class="intro">'+data[i].pillDesc+'&nbsp;&nbsp;&nbsp;用量：'+data[i].dose+'</p>'
+	   					
+	    		   }
+	    		  
+	    		   
+	    	   }
+	    	   
+	    			 $('#remaindPill').append(li); 
+	    			 
+	    			 
+	    	  
+	    	  
+				
+				
+			
+	    }); 
+}
+
+
+
+
 </script>
     </div>
     <!--/main-->

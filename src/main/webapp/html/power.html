@@ -5,8 +5,10 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 
     <title>智立方</title>
+    
     <link rel="stylesheet" type="text/css" href="../css/common.css"/>
     <link rel="stylesheet" type="text/css" href="../css/main.css"/>
+    
 </head>
 <body>
 <div class="topbar-wrap white">
@@ -20,7 +22,7 @@
         </div>
         <div class="top-info-wrap">
             <ul class="top-info-list clearfix">                
-                <li><a href="login.html">退出</a></li>
+              <li><a href="login.html">退出</a></li>
             </ul>
         </div>
     </div>
@@ -34,7 +36,7 @@
             <ul class="sidebar-list">
                 <li>
                     <a href="#"><i class="icon-font">&#xe003;</i>常用操作</a>
-                       <ul class="sub-menu">
+                    <ul class="sub-menu">
                         <li><a href="billRecord.html"><i class="icon-font">&#xe008;</i>吃药记录</a></li>
                         <li><a href="billNews.html"><i class="icon-font">&#xe005;</i>药品论坛</a></li>
                         <li><a href="myCase.html"><i class="icon-font">&#xe006;</i>我的病历</a></li>
@@ -45,7 +47,7 @@
                 </li>
                 <li>
                     <a href="#"><i class="icon-font">&#xe018;</i>系统管理</a>
-                       <ul class="sub-menu">
+                        <ul class="sub-menu">
                     	<li><a href=""><i class="icon-font">&#xe012;</i>权限管理</a></li>
                     	<li><a href="timedTask.html"><i class="icon-font">&#xe004;</i>定时留言</a></li>
                         <li><a href="system.html"><i class="icon-font">&#xe017;</i>系统设置</a></li>
@@ -58,14 +60,14 @@
     <div class="main-wrap">
 
         <div class="crumb-wrap">
-            <div class="crumb-list"><i class="icon-font"></i><a href="index.html">首页</a><span class="crumb-step">&gt;</span><span class="crumb-name">药品论坛</span></div>
+            <div class="crumb-list"><i class="icon-font"></i><a href="index.html">首页</a><span class="crumb-step">&gt;</span><span class="crumb-name">权限管理</span></div>
         </div>
-         <div class="search-wrap">
+            <div class="search-wrap">
             <div class="search-content">
                 <form action="#" method="post">
                     <table class="search-tab">
                         <tr>
-                       <!--      <th width="120">选择分类:</th>
+    <!--                         <th width="120">选择分类:</th>
                             <td>
                                 <select name="search-sort" id="">
                                     <option value="">全部</option>
@@ -73,8 +75,8 @@
                                 </select>
                             </td> -->
                             <th width="70">关键字:</th>
-                            <td><input class="common-text" placeholder="关键字" name="keywords" value="" id="keywords" type="text"></td>
-                            <td><input class="btn btn-primary btn2" name="sub" value="查询" type="button" onclick="showpillMsg();"></td>
+                            <td><input class="common-text" placeholder="关键字" name="keywords" value="" id="" type="text"></td>
+                            <td><input class="btn btn-primary btn2" name="sub" value="查询" type="submit"></td>
                         </tr>
                     </table>
                 </form>
@@ -84,107 +86,116 @@
             <form name="myform" id="myform" method="post">
                 <div class="result-title">
                     <div class="result-list">
-                        <a href="insertBills.html"><i class="icon-font"></i>新增药品</a>
-						<!-- <a href=""><i class="icon-next"></i>批量删除</a> -->
+                       <!--  <a href="insert.html"><i class="icon-font"></i>新增任务</a> -->
+
                     </div>
                 </div>
                 <div class="result-content">
-                    <table class="result-tab" width="100%" id="addpill" >
-                        <tr> 
-                        	<th></th>
+                    <table class="result-tab" width="100%" id="addUser">
+                        <tr>                                                      
                             <th>ID</th>
-                            <th>药品</th>
-                            <th>用法用量</th>                        
+                            <th>用户名</th>
+                            <th>手机号码</th>
                             <th>更新时间</th>                            
+                            <th>权限</th>
                             <th>操作</th>
                         </tr>
-                        <tr>   
-                        	<td><input type="checkbox"/></td>
+                        <tr>                                                 
                             <td>59</td>
-                            <td title=""><a target="_blank" href="#" title="">头孢西丁钠</a>
+                            <td title="询问服药效果"><a>询问服药效果</a>
                             </td>
-                            <td>2</td>
+                            <td>0000</td>                      
                             <td>2014-03-15 21:11:01</td>
                             <td>
-                                <a class="link-update" href="#">修改</a>
-                                <a class="link-del" href="#">删除</a>
+                            	<select>
+                            		<option val="1">普通用户</option>
+                            		<option val="2">管理员</option>
+                            		<option val="3">参观人员</option>
+                            		<option val="4">编外人员</option>
+                            	</select>
+                            </td>
+                            <td>
+                                <a class="link-update" href="#">保存</a>
                             </td>
                         </tr>
                     </table>
                 </div>
             </form>
+        </div> 
+    </div>
+    <!--/main-->
+      <div class="write-model">
+       		<iframe name="" frameborder="0" scrolling="no" marginwidth="0" marginheight="0"  width="50%" height="70" src="model.html"></iframe>
+       </div>
 </div>
-     </div>
-</body>
 <script type="text/javascript" src="../js/jquery-2.1.0.js" ></script>
 <script>
-
 	$(function(){
-		showpillMsg();
+		showAllUser();
 	});
-	/**
-	 * 展示药品信息
-	 */
-	function showpillMsg(){
-		var url = "../pill/showAllPill.do";
-		var key = $('#keywords').val();
-		$.post(url,{key:key},function(res){
+	/**加载全部用户*/
+	function showAllUser(){
+		var url = "../setting/showAllUser.do";
+		$.get(url,function(res){
 			if(res.state==1){
-				addPillMsg(res.data);
+				addAlluser(res.data);
 			}
 		});
 	}
-	function addPillMsg(data){
-		var tr = '<tr>   '
-/*         +'	<td><input type="checkbox"/></td>' */
-        +'   <td>[id]</td>'
-        +'    <td title=""><a target="_blank" href="#" title="">[pillDesc]</a>'
-        +'    </td>'
-        +'    <td>[instructions]</td>'
-        +'    <td>[updateTime]</td>'
-        +'    <td>'
-        +'        <a class="link-update" id="[pillId]" onclick="editPill1(this.id);">修改</a>'
-        +'        <a class="link-del" id="[pillId]" onclick="deletePill(this.id);">删除</a>'
-        +'    </td>'
-        +'</tr>';
-     var tr2 = '<tr> '
-   /*    +   	'<th></th>' */
-      +      '<th>ID</th>'
-      +      '<th>药品</th>'
-      +      '<th>用法用量</th>  '
-      +      '<th>更新时间</th>  '
-      +      '<th>操作</th>'
-      +		' </tr>';
-        $('#addpill').empty();
-        $('#addpill').append(tr2);
-        for(var i=0;i<data.length;i++){
-        	
-        	var t = tr.replace("[id]",data[i].id)
-        		  	  .replace("[pillDesc]",data[i].pillDesc)
-        		  	  .replace("[instructions]",data[i].instructions)
-        		   	  .replace("[pillId]",data[i].pillId)
-        		  	  .replace("[pillId]",data[i].pillId)
-        		   	  .replace("[updateTime]",new Date(data[i].updateTime).toLocaleDateString());
-        	$('#addpill').append(t);
-        }
-	}
-	/**删除*/
-	function deletePill(pillId){
-		var b = confirm("是否删除？");
-		if(b){
-			var url = "../pill/deletePill.do";
-			$.post(url,{pillId:pillId},function(res){
-				if(res.state==1){
-					alert("删除成功！");
-					showpillMsg();
-				}
-			});
+	function addAlluser(data){
+	var addUser = $('#addUser');
+	var thead = '<tr>      '                                                
+     +   '    <th>ID</th>'
+     +   '    <th>用户名</th>'
+     +   '    <th>手机号码</th>'
+     +   '    <th>更新时间</th>  '                          
+      +  '    <th>权限</th>'
+     +   '    <th>操作</th>'
+     +  ' </tr>';
+        
+	var tr = '<tr>          '                                       
+      +    '  <td>[id]</td>'
+      +    '  <td title="询问服药效果"><a>[userName]</a>'
+       +   '  </td>'
+       +   '  <td>[phone]</td>      '                
+      +    '  <td>[createTime]</td>'
+      +    '  <td>'
+      +    '  	<select id="testSelect">'
+       +    ' 		<option value="normal">普通用户</option>'
+      +    '  		<option value="2">管理员</option>'
+       +    ' 		<option value="3">参观人员</option>'
+      +     ' 		<option value="4">编外人员</option>'
+      +    '  	</select>'
+      +    '  </td>'
+       +   '  <td>'
+       +   '      <a class="link-update" href="#" id="[userId]" onclick="updatePower(this.id);">保存</a>'
+      +    '  </td>'
+      + ' </tr>';
+	addUser.empty();
+	addUser.append(thead);
+		for(var i=0;i<data.length;i++){
+			var t = tr.replace("[id]",data[i].id)
+					  .replace("[userId]",data[i].userId)
+					  .replace("[userName]",data[i].userName)
+					  .replace("[phone]",data[i].phone)
+					  .replace("[createTime]",new Date(data[i].createTime).toLocaleString());
+		addUser.append(t);
 		}
-	
 	}
-	/**编辑**/
-	function editPill(pillId){
-		window.location.href="insertBills.html?valus="+pillId;  
+	
+	function updatePower(userId){
+		var powerId = $('#testSelect option:selected').val();//选中的值
+		var url='../setting/updatePower.do';
+		var params={
+				userId:userId,
+				powerId:powerId
+		};
+		$.post(url,params,function(res){
+			if(res.state==1){
+				alert("更新成功");
+			}
+		});
 	}
 </script>
+</body>
 </html>
