@@ -38,12 +38,16 @@ public class RemaindController extends CommonController{
 	
 	@RequestMapping("/showEatRemaind")       
 	 @ResponseBody
-	 public JsonResult showEatRemaind() {
+	 public JsonResult showEatRemaind(String userId) {
 	  System.out.println("showEatRemaind");
 	  hanldDiff();
 	  Map<String,Object> data = new HashMap<String, Object>();
 	  List<Map<String,Object>> list = null;
-	  data.put("userId",session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+	  if(userId!=null) {
+		  data.put("userId", userId);
+	  }else {
+		  data.put("userId",session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+	  }
 	  System.out.println("userId:"+session.getAttribute("userId"));
 	   LscExchangeDb lsc = new LscExchangeDb();
 	   lsc.setData(data);

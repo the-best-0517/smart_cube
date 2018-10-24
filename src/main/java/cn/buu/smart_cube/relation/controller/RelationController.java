@@ -23,7 +23,31 @@ public class RelationController extends CommonController{
 		@Resource
 		private ExchangeDbService exchangeDbService;
 		
+		@RequestMapping("/showLinkManWeb")
+		@ResponseBody
+		public JsonResult showLinkManWeb(HttpSession session) {
+			List<Map<String,Object>> list = null;
+			Object userId = session.getAttribute("userId");
+			Map<String,Object> data = new HashMap<String,Object>();
+			data.put("userId", userId==null?123:userId);
+			LscExchangeDb lsc = new LscExchangeDb();
+			lsc.setSqlPath("relation/showLinkManWeb");
+			lsc.setData(data);
+			try {
+				list = exchangeDbService.selectDb(lsc);
+				return new JsonResult(list);	
+			}catch(Exception e) {
+				e.printStackTrace();
+				return new JsonResult("error");	
+			}		
+		}
 		
+		
+		/**
+		 * 查询所有联系人
+		 * @param session
+		 * @return
+		 */
 		@RequestMapping("/showLinkMan")
 		@ResponseBody
 		public JsonResult showLinkMan(HttpSession session) {
