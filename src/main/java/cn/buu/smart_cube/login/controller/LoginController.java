@@ -37,6 +37,31 @@ public class LoginController extends CommonController{
 	private CommonServiceImpl commonServiceImpl;
 	
 	/**
+	 *获取当前登录人的角色
+	 * @return
+	 */
+	@RequestMapping("/checkRole")
+	@ResponseBody
+	public JsonResult checkRole(HttpSession session) {
+		System.out.println("checkRole");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String,Object>();
+		Object userId = session.getAttribute("userId");
+		data.put("userId", userId==null?123:userId);
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("login/QryRoleByNowUser");
+		try {
+			List<Map<String,Object>> roleList = exchangeDbService.selectDb(lsc);
+			return new JsonResult(roleList);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new JsonResult("error");
+		}
+		
+	}
+	
+	/**
 	 * 检测此手机号是否注册过
 	 * @param phone
 	 * @return

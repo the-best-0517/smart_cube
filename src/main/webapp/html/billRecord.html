@@ -24,6 +24,9 @@
 		    color: #58a6fb;
 		    background: black;
        }
+       .hi{
+       			display:none;
+       }
     </style>
 </head>
 <body>
@@ -50,7 +53,7 @@
         </div>
         <div class="sidebar-content">
             <ul class="sidebar-list">
-                <li>
+                <li id="nor">
                     <a href="#"><i class="icon-font">&#xe003;</i>常用操作</a>
                     <ul class="sub-menu">
                         <li><a href="billRecord.html"><i class="icon-font">&#xe008;</i>吃药记录</a></li>
@@ -61,7 +64,7 @@
                         <!--<li><a href="design.html"><i class="icon-font">&#xe033;</i>广告管理</a></li>-->
                     </ul>
                 </li>
-                <li>
+                <li id="sys" >
                     <a href="#"><i class="icon-font">&#xe018;</i>系统管理</a>
                       <ul class="sub-menu">
                     	<li><a href="power.html"><i class="icon-font">&#xe012;</i>权限管理</a></li>
@@ -117,6 +120,7 @@
 </div>
 
 <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="../js/power.js"></script>
 <script type="text/javascript">
 $(".main .year .list").each(function(e, target){
 	var $target=$(target),
@@ -129,10 +133,16 @@ $(".main .year>h2>a").click(function(e){
 });
 
 $(function(){
-	
+	/* var userName="<%=session.getAttribute("userName")%>";
+	console.log("userName:",userName);
+	$('#sys').style.display="none"; */
+	getMyName();
 	showpillRecord();
 	showOption();
 });
+
+
+
 
 $("#year").change(function(){
 	showpillRecord();
