@@ -1,10 +1,15 @@
-select 
-true_name as name,
-sex,
-birthday,
-blood_type as bloodType,
-pass_ills as passIlls,
-allergy_bill as allergyBill,
-emergency_num as emergencyNum
-from t_md_infocard
-where user_id = #{userId}
+SELECT
+	true_name AS name,
+	td.name AS  AS sex,
+	birthday,
+	blood_type AS bloodType,
+	pass_ills AS passIlls,
+	allergy_bill AS allergyBill,
+	emergency_num AS emergencyNum 
+FROM
+	t_md_infocard tmi
+	LEFT JOIN t_dict td ON ON tmi.sex = t =  = td.CODE 
+	A 
+	AND ND td.cata_cod_code = 'sex' 
+WHERE
+	user_id = #{userId}
