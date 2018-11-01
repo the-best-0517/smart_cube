@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.gexin.fastjson.JSONArray;
+
 import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.contoller.CommonController;
@@ -34,8 +36,57 @@ public class RemaindController extends CommonController{
 	@Resource
 	private HttpSession session;
 	
+	/**
+	 * 检查是否有新通知
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/checkNotic")
+	@ResponseBody
+	public boolean checkNotic(HttpSession session) {
+		System.out.println("checkNotic");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String, Object>();
+		data.put("userId", session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("remiand/QryIfNotic");
+		List<Map<String,Object>> list = exchangeDbService.selectDb(lsc);
+		if(list.isEmpty()) {
+			return false;	
+		}else {
+			return true;
+		}
+		
+	}
 	
+	/**
+	 * 加载全部消息
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/notic")
+	@ResponseBody
+	public JsonResult notic(HttpSession session) {
+		System.out.println("notic");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String, Object>();
+		data.put("userId", session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("remiand/updateIfRead");
+		exchangeDbService.saveDb(lsc);
+		
+		lsc.setSqlPath("remiand/QryAppNoticByAll");
+		List<Map<String,Object>> list = exchangeDbService.selectDb(lsc);
+		return new JsonResult(list);	
+	}
 	
+	/***
+	 * 网页端 药品记录
+	 * @param userId
+	 * @return
+	 */
 	@RequestMapping("/showEatRemaind")       
 	 @ResponseBody
 	 public JsonResult showEatRemaind(String userId) {
@@ -225,17 +276,23 @@ public class RemaindController extends CommonController{
 	}
 	/**
 	 * 保存编辑信息
+	 * @throws ParseException 
 	 */
 	@RequestMapping("/saveRemindEdit")
 	@ResponseBody
-	public JsonResult saveRemindEdit(String remindId,String remindEdit,String remindBox) {
+	public JsonResult saveRemindEdit(String remindId,String remindEdit/*,String remindBox*/) {
 		System.out.println("saveRemindEdit");
 		hanldDiff();
+		System.out.println("remindId:"+remindId);
+		System.out.println("remindEdit:"+remindEdit);
+		remindEdit = remindEdit.replace("T", " ");
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//		Object d = sdf.parse(remindEdit);
 		Map<String,Object> data = new HashMap<String, Object>();
 		data.put("remindId", remindId);
 		data.put("remindEdit", remindEdit);
-		remindBox = remindBox.replaceAll("号盒", "");
-		data.put("remindBox", remindBox);
+		//remindBox = remindBox.replaceAll("号盒", "");
+		//data.put("remindBox", remindBox);
 		LscExchangeDb lsc = new LscExchangeDb();
 		/**通过remindID 查当前条的盒子号和提醒时间*/
 		lsc.setData(data);

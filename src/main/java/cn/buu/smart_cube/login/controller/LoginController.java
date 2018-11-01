@@ -215,7 +215,8 @@ public class LoginController extends CommonController{
 		System.out.println("savaUser");
 		hanldDiff();
 		Integer code = IndustrySMS.code;
-		if(email.equals(code)) {
+		System.out.println("code:"+code);
+		if(!email.equals(code)) {
 			return new JsonResult("验证码错误");
 		}
 		long userId = commonServiceImpl.getOnlyKey(); 

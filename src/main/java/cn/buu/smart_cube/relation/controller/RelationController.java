@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.buu.on_way.common.entity.IndustrySMS;
 import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.contoller.CommonController;
@@ -80,7 +81,10 @@ public class RelationController extends CommonController{
 		public JsonResult saveLinkMan(String userName,String phone,String vCode,String relationShip,HttpSession session) {
 			System.out.println("saveLinkMan");
 			hanldDiff();
-			if(!"1234".equals(vCode)) {
+			Integer code = IndustrySMS.code;
+			System.out.println("code："+code);
+			System.out.println(Integer.parseInt(vCode));;
+			if(!(Integer.parseInt(vCode)==code)) {
 				return new JsonResult("验证码错误");
 			}
 			long linkId =(long)(Math.random()*10000000);
