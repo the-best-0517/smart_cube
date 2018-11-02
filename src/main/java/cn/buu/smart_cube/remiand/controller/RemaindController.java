@@ -569,7 +569,7 @@ public class RemaindController extends CommonController{
 			/*未来可以有选择添加几天的*/			
 			for(int k=0;k<remaindTime.size();k++) {		
 				Map<String,Object> data = new HashMap<String, Object>();
-				if(phone!=null||"".equals(phone)||"null".equals(phone)) {
+				if(phone.length()==11) {
 					data.put("phone", phone);
 					//通过电话号码查询userId
 					//LscExchangeDb lsc = new LscExchangeDb();

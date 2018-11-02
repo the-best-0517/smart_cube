@@ -25,6 +25,31 @@ public class IndexSetController extends CommonController{
 		private CommonServiceImpl commonServiceImpl;
 		
 		
+		@RequestMapping("/showNoticDetial")
+		@ResponseBody
+		public JsonResult showNoticDetial(String id) {
+			System.out.println("showEditNotic");
+			hanldDiff();
+			Map<String,Object> data = new HashMap<String,Object>();
+			data.put("id",id);
+			LscExchangeDb lsc = new LscExchangeDb();
+			lsc.setData(data);
+			lsc.setSqlPath("setting/QryNoticByNoticId");
+			try {
+				List<Map<String,Object>> list = exchangeDbServiceImpl.selectDb(lsc);
+				System.out.println("sss:"+list);
+				return new JsonResult(list);
+			}catch(Exception e) {
+				e.printStackTrace();
+				return new JsonResult("error");
+			}			
+		}
+		
+		
+		/**
+		 * 加载所有文章
+		 * @return
+		 */
 		@RequestMapping("/showAllWriting")
 		@ResponseBody
 		public JsonResult showAllWriting() {

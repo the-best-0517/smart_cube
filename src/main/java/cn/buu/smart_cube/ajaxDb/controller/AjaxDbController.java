@@ -38,6 +38,27 @@ public class AjaxDbController  {
 		if(pwd.length()==0) {
 			return;
 		}
+		if(pwd.startsWith("C")) {
+			if(pwd.indexOf(":")!=-1) {
+				return;
+			}
+			String num = pwd.charAt(1)+""+pwd.charAt(2);
+			System.out.println("num:"+num);
+			int n =pwd.lastIndexOf("0");
+			System.out.println("n0:"+n);
+			n = (Integer.parseInt(num)-1)*3+(n-3+1);
+			System.out.println("n2:"+n);
+			data.put("userId",session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+			data.put("boxId", n);
+			LscExchangeDb lsc = new LscExchangeDb();
+			lsc.setData(data);
+			lsc.setSqlPath("remiand/updateIfEating");
+			try {
+				exchangeDbServiceImpl.saveDb(lsc);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 		if(pwd.startsWith(",Z")) {
 			//检测副盒是否都在		
 			List<String> l = new ArrayList<String>();
@@ -67,14 +88,27 @@ public class AjaxDbController  {
 		}
 		if(pwd.startsWith("N")) {
 			System.out.println("N...");
+			int bn = 0;
 			data.put("userId",session.getAttribute("userId")==null?123:session.getAttribute("userId"));
 			System.out.println("pwd.substring(0):"+pwd.substring(3));
 			data.put("boxSerial", pwd.substring(3));
 			LscExchangeDb lsc = new LscExchangeDb();
 			lsc.setData(data);
+			/**检查序列号是否存在*/
+			lsc.setSqlPath("ajaxDb/checkSerialIfExit");
+			List<Map<String,Object>>  list = exchangeDbServiceImpl.selectDb(lsc);
+			if(list.size()!=0) {
+				System.out.println("系列号存在");
+				return;
+			}
 			lsc.setSqlPath("ajaxDb/QryMaxNum");
 			List<Map<String,Object>> maxBoxNum = exchangeDbServiceImpl.selectDb(lsc);
-			int bn = Integer.parseInt(maxBoxNum.get(0).get("boxNum").toString())+1;
+			System.out.println("maxBoxNum:"+maxBoxNum);
+			if(maxBoxNum.isEmpty()||maxBoxNum.size()==0) {
+				bn = 1;
+			}else {
+				bn = Integer.parseInt(maxBoxNum.get(0).get("boxNum").toString())+1;
+			}			 
 			if(bn<10) {
 				data.put("boxNum", "0"+bn);
 			}else {

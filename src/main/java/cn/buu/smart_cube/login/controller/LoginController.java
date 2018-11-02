@@ -187,6 +187,16 @@ public class LoginController extends CommonController{
 			System.out.println("str:"+str);
 			list.add(str);
 			list.add(data.get(0).get("boxId").toString());
+			
+			System.out.println("写通知：该吃药了");
+			Map<String,Object> d = new HashMap<String,Object>();
+			d.put("informDesc","该吃药了");
+			d.put("userId", userId==null?123:userId);
+			lsc.setData(d);
+			lsc.setSqlPath("login/makeNotic");
+			exchangeDbService.saveDb(lsc);
+			
+			System.out.println("list:"+list);
 			return new JsonResult(list);
 		}else {
 			return new JsonResult("error");

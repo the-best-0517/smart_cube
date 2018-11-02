@@ -1,4 +1,4 @@
-insert into t_mybox_info(
+REPLACE into t_mybox_info(
 user_id,
 box_serial,
 box_num
