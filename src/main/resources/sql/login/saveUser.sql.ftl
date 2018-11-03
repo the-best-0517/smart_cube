@@ -3,6 +3,8 @@ insert into t_user(
 	user_name,
 	pwd,
 	phone,
+	head_img_path,
+	qr_code,
 	create_time,
 	update_time
 )values(
@@ -10,6 +12,8 @@ insert into t_user(
 	#{userName},
 	#{pwd},
 	#{phone},
+	#{headImgPath},
+	#{qrCode},
 	now(),
 	now()
 )

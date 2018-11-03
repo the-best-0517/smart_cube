@@ -28,6 +28,72 @@ public class CaseController extends CommonController{
 	@Resource
 	private CommonServiceImpl commonServiceImpl;
 	
+	@RequestMapping("/deleteImg")
+	@ResponseBody
+	public JsonResult deleteImg(String imgpath,String caseId) {
+		System.out.println("deleteImg");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String,Object>(16);
+		data.put("imgpath", imgpath);
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("mycase/deleteImg");
+		exchangeDbService.deleteDb(lsc);
+		return new JsonResult();		
+	}
+	
+	
+	/**
+	 * 展示个人病例药品记录
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/showBillRecord")
+	@ResponseBody
+	public JsonResult showBillRecord(HttpSession session,String caseId){
+		System.out.println("showBillRecord");
+		System.out.println("caseId:"+caseId);
+		hanldDiff();
+		List<Map<String,Object>> list = null;
+		Map<String,Object> data = new HashMap<String,Object>(16);
+		data.put("caseId", caseId);
+		data.put("userId",session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("mycase/QryBillRecordByUserId");
+		try {
+			list = exchangeDbService.selectDb(lsc);
+			System.out.println("lisy:"+list);
+			return new JsonResult(list);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new JsonResult("error");
+		}		
+	}
+	
+	/**
+	 * 删除病例用药记录
+	 * @param caseId
+	 * @param pillId
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/deletePill")
+	@ResponseBody
+	public JsonResult deletePill(String caseId,String pillId,HttpSession session) {
+		System.out.println("deletePill");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String,Object>();
+		data.put("caseId", caseId);
+		data.put("pillId", pillId);
+		data.put("userId",session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+		LscExchangeDb lsc = new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("mycase/deletePill");
+		exchangeDbService.deleteDb(lsc);
+		return new JsonResult();
+		
+	}
 	
 	/**
 	 * 查询病例具体信息
@@ -117,7 +183,7 @@ public class CaseController extends CommonController{
 	 */
 	@RequestMapping("/saveCaseMsg")
 	@ResponseBody
-	public JsonResult saveCaseMsg(String visitDate,String hospital,String season,HttpSession session) {
+	public JsonResult saveCaseMsg(String caseId,String visitDate,String hospital,String season,HttpSession session) {
 		hanldDiff();
 		Object userId = session.getAttribute("userId");
 		Map<String,Object> data = new HashMap<String,Object>();
@@ -125,8 +191,12 @@ public class CaseController extends CommonController{
 		data.put("hospital", hospital);
 		data.put("season",season);
 		data.put("userId", userId);
-		String caseId = commonServiceImpl.getOnlyKey()+"";
-		data.put("caseId", caseId);
+		if(caseId!=null&&caseId.length()>0) {
+			data.put("caseId", caseId);
+		}else {
+			caseId = commonServiceImpl.getOnlyKey()+"";
+			data.put("caseId", caseId);
+		}
 		List<String> list = new ArrayList<String>();
 		list.add(caseId);
 		LscExchangeDb db = new LscExchangeDb();

@@ -1,4 +1,4 @@
-insert into t_md_bill_case(
+replace into t_md_bill_case(
 user_id,
 bill_case_id,
 bill_case_hospital,

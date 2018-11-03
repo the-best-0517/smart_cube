@@ -1,5 +1,4 @@
 select id as id,
-inform_id as informId,
 user_id as userId,
 inform_desc as informDesc,
 create_time as createTime,

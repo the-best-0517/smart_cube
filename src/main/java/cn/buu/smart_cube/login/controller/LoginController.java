@@ -109,7 +109,12 @@ public class LoginController extends CommonController{
 		lsc.setSqlPath("login/QryBuleToothMac");
 		try {
 			list = exchangeDbService.selectDb(lsc);
-			return new JsonResult(list);
+			if(list.size()>0) {
+				return new JsonResult(list);
+			}else {
+				return new JsonResult("null");
+			}
+			
 		}catch(Exception e) {
 			e.printStackTrace();
 			return new JsonResult("error");
@@ -170,8 +175,10 @@ public class LoginController extends CommonController{
 			for(int i=0;i<allBox.size();i++) {
 				k = squareNumber;
 				squareNumber = squareNumber+Integer.parseInt(allBox.get(i).get("squareNumber").toString());
+				System.out.println("squareNumber:"+squareNumber);
 				if(bNum<=squareNumber) {
 					int n = i+1;
+					System.out.println("nn:"+n);
 					str = "O0"+n;
 					break;
 				}
@@ -236,6 +243,8 @@ public class LoginController extends CommonController{
 		data.put("pwd",pwd);
 		data.put("phone",phone);
 		data.put("roleId","normal");
+		data.put("headImgPath", "file/headImg/icno.png");
+		data.put("qrCode", "file/codeImg/123.png");
 		LscExchangeDb db = new LscExchangeDb();
 		db.setSqlPath("login/saveUser");
 		db.setData(data);

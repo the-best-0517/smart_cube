@@ -79,6 +79,7 @@ public class RemaindController extends CommonController{
 		
 		lsc.setSqlPath("remiand/QryAppNoticByAll");
 		List<Map<String,Object>> list = exchangeDbService.selectDb(lsc);
+		System.out.println("listnotic:"+list);
 		return new JsonResult(list);	
 	}
 	
@@ -409,7 +410,7 @@ public class RemaindController extends CommonController{
 		jsonPills = java.net.URLDecoder.decode(jsonPills,"UTF-8");
 		System.out.println("makeRemiandBypills:"+jsonPills);
 		
-		int x = jsonPills.lastIndexOf("&",jsonPills.lastIndexOf("&")-1);
+		int x = jsonPills.lastIndexOf("&", jsonPills.lastIndexOf("&",jsonPills.lastIndexOf("&")-1)-1) ;
 		String str = jsonPills;
 		String pt = str.substring(x);
 		String[] pts = pt.split("&");
@@ -421,6 +422,10 @@ public class RemaindController extends CommonController{
 		String[] t1 = pts[2].split("=");
 		String times = t1.length>1?t1[1]:"2";
 		System.out.println("times:"+times);
+		//病例号
+		String[] c1 = pts[3].split("=");
+		String caseId = c1.length>1?c1[1]:"1";
+		System.out.println("caseId:"+caseId);
 		
 		jsonPills = jsonPills.substring(0, x);
 		System.out.println("jsonPills:::"+jsonPills);
@@ -450,6 +455,8 @@ public class RemaindController extends CommonController{
 			}
 		}
 		System.out.println("l:"+l);
+		/**创建病例服药记录*/
+		makeCasePill(caseId,l);
 		/**根据药品信息生成提醒事项*/
 		System.out.println("times:"+times);
 		for(int i=0;i<Integer.parseInt(times);i++) {
@@ -458,6 +465,36 @@ public class RemaindController extends CommonController{
 		
 		return new JsonResult();		
 	}	
+
+	public void makeCasePill(String caseId, List<Map<String, String>> l) {
+		Map<String,Object> data = new HashMap<String,Object>();
+		LscExchangeDb lsc = new LscExchangeDb();
+		data.put("userId",session.getAttribute("userId")==null?123:session.getAttribute("userId"));
+		data.put("caseId",caseId);
+		if(caseId.equals("1")) {
+			//新建病例
+			 long c = commonService.getOnlyKey();
+			 data.put("caseId", c);
+			 lsc.setData(data);
+			 lsc.setSqlPath("mycase/insertCase");
+			 exchangeDbService.saveDb(lsc);
+		}
+		for(int i=0;i<l.size();i++) {
+			data.put("pillDesc", l.get(i).get("pillDesc"));
+			String EatTimes = l.get(i).get("EatTimes").toString().toString();
+			int dose = Integer.parseInt(EatTimes.substring(EatTimes.indexOf("次")+1, EatTimes.length()-1));
+			data.put("dose", dose);
+			lsc.setData(data);
+			lsc.setSqlPath("remiand/QryPillIdByPillDesc");
+			List<Map<String,Object>> pillId = exchangeDbService.selectDb(lsc);
+			System.out.println("pill:"+pillId);
+			data.put("pillId", pillId.get(0).get("pillId"));
+			lsc.setData(data);
+			lsc.setSqlPath("remiand/replaceCasePill");
+			exchangeDbService.saveDb(lsc);
+		}
+		
+	}
 
 	/**
 	 * 生成智能提醒记录
@@ -569,7 +606,8 @@ public class RemaindController extends CommonController{
 			/*未来可以有选择添加几天的*/			
 			for(int k=0;k<remaindTime.size();k++) {		
 				Map<String,Object> data = new HashMap<String, Object>();
-				if(phone.length()==11) {
+				System.out.println("phone:"+phone);
+				if(phone.length()==11&&!phone.equals(null)&&!phone.equals("")) {
 					data.put("phone", phone);
 					//通过电话号码查询userId
 					//LscExchangeDb lsc = new LscExchangeDb();
