@@ -183,7 +183,7 @@ public class CaseController extends CommonController{
 	 */
 	@RequestMapping("/saveCaseMsg")
 	@ResponseBody
-	public JsonResult saveCaseMsg(String caseId,String visitDate,String hospital,String season,HttpSession session) {
+	public JsonResult saveCaseMsg(String feel,String caseId,String visitDate,String hospital,String season,HttpSession session) {
 		hanldDiff();
 		Object userId = session.getAttribute("userId");
 		Map<String,Object> data = new HashMap<String,Object>();
@@ -191,6 +191,7 @@ public class CaseController extends CommonController{
 		data.put("hospital", hospital);
 		data.put("season",season);
 		data.put("userId", userId);
+		data.put("feel", feel);
 		if(caseId!=null&&caseId.length()>0) {
 			data.put("caseId", caseId);
 		}else {

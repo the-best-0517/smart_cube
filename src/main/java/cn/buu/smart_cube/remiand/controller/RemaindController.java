@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.gexin.fastjson.JSONArray;
-
 import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.contoller.CommonController;
@@ -35,6 +33,65 @@ public class RemaindController extends CommonController{
 	private CommonService commonService;
 	@Resource
 	private HttpSession session;
+	
+	@RequestMapping("/QryPillIdByPillDesc")
+	@ResponseBody
+	public JsonResult QryPillIdByPillDesc(String pillDesc) {
+		System.out.println("QryPillIdByPillDesc");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String, Object>();
+		data.put("pillDesc", pillDesc);
+		LscExchangeDb lsc =new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("remiand/QryPillIdByPillDesc");
+		List<Map<String,Object>> list = exchangeDbService.selectDb(lsc);
+		return new JsonResult(list);		
+	}
+	
+	
+	/**
+	 * 判断药品是否存在
+	 * @param pillDesc
+	 * @return
+	 */
+	@RequestMapping("/ifExit")
+	@ResponseBody
+	public boolean ifExit(String pillDesc) {
+		System.out.println("ifExit");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String, Object>();
+		data.put("pillDesc", pillDesc);
+		LscExchangeDb lsc =new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("remiand/QryPillifExit");
+		List<Map<String,Object>> list = exchangeDbService.selectDb(lsc);
+		if(list.size()==0) {
+			return false;	
+		}else {
+			return true;
+		}
+		
+	}
+	
+	/**
+	 * 药品名称模糊提醒
+	 * @param pillDesc
+	 * @return
+	 */
+	@RequestMapping("/selectBlur")
+	@ResponseBody
+	public JsonResult selectBlur(String pillDesc) {
+		System.out.println("selectBlur");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String, Object>();
+		data.put("pillDesc", pillDesc);
+		LscExchangeDb lsc =new LscExchangeDb();
+		lsc.setData(data);
+		lsc.setSqlPath("remiand/QryBlur");
+		List<Map<String,Object>> list = exchangeDbService.selectDb(lsc);
+		return new JsonResult(list);		
+	}
+	
 	
 	/**
 	 * 检查是否有新通知

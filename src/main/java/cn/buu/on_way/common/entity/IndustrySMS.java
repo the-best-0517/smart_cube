@@ -22,7 +22,7 @@ public class IndustrySMS
 	public static String to = "";
 	public static int code = (int)((Math.random()*9+1)*100000);
 	private static String smsContent = "【智立方】您的验证码："+code+"，如非本人操作，请忽略此短信。";
-	private static String smsContent2 = "【智立方】您的家属距离服药时间超过30分钟还未服药，请关注";
+	//private static String smsContent2 = "【智立方】您的家属距离服药时间超过30分钟还未服药，请关注";
 
 	/**
 	 * 验证码通知短信
@@ -45,25 +45,5 @@ public class IndustrySMS
 	    String result = HttpUtil.post(url, body);
 	    System.out.println("result:" + System.lineSeparator() + result);
 	}
-	/**
-	 * 通知家属
-	 */
-	public static void execute2()
 	
-	{
-		String tmpSmsContent = null;
-	    try{
-	     // tmpSmsContent = URLEncoder.encode(smsContent, "UTF-8");
-	    tmpSmsContent = smsContent2;
-	    }catch(Exception e){
-	      
-	    }
-	    String url = Config.BASE_URL + operation;
-	    String body = "accountSid=" + accountSid + "&to=" + to + "&smsContent=" + tmpSmsContent
-	        + HttpUtil.createCommonParam();
-
-	    // 提交请求
-	    String result = HttpUtil.post(url, body);
-	    System.out.println("result:" + System.lineSeparator() + result);
-	}
 }

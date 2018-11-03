@@ -3,6 +3,7 @@ user_id,
 bill_case_id,
 bill_case_hospital,
 bill_case_desc,
+feel,
 create_time,
 update_time
 	
@@ -11,6 +12,7 @@ update_time
 	#{caseId},
 	#{hospital},
 	#{season},
+	#{feel},
 	#{visitDate},
 	now()
 )

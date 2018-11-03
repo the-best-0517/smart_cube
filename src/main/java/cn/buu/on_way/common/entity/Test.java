@@ -12,11 +12,11 @@ public class Test
 		// AccountInfo.execute();
 
 		// 验证码通知短信接口
-		IndustrySMS.to="18701198791";
-	 IndustrySMS.execute();
+//		IndustrySMS.to="18701198791";
+//	 IndustrySMS.execute();
 
 		// 会员营销短信接口
-		// AffMarkSMS.execute();
+		 AffMarkSMS.execute();
 
 		// 语音验证码
 		// VoiceCode.execute();
