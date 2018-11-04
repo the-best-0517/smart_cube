@@ -137,7 +137,7 @@ public class LoginController extends CommonController{
 	 	Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         //+1今天的时间加一天
-        calendar.add(Calendar.MINUTE,-30);
+        calendar.add(Calendar.MINUTE,-10);
         date = calendar.getTime();
         String before30 = sdf.format(date);
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -153,6 +153,17 @@ public class LoginController extends CommonController{
 			if(d!=null&d.size()>0) {
 				//短信家人
 				System.out.println("短信家人...");
+				Map<String,Object> data = new HashMap<String,Object>();
+				LscExchangeDb lsc = new LscExchangeDb();
+				lsc.setSqlPath("remiand/QryFamilyUserId");
+				List<Map<String,Object>> fuList = exchangeDbService.selectDb(lsc);
+				for(int i=0;i<fuList.size();i++) {
+					data.put("fuId",fuList.get(i).get("userId"));
+					data.put("informDesc","您的家属已超过吃药提醒时间10分钟，请关注！");
+					lsc.setData(data);
+					lsc.setSqlPath("remiand/makeNotic");
+					exchangeDbService.saveDb(lsc);
+				}
 			}
 		}catch(Exception e) {
 			e.printStackTrace();

@@ -39,7 +39,7 @@ public class AjaxDbController  {
 			return;
 		}
 		if(pwd.startsWith("C")) {
-			if(pwd.indexOf(":")!=-1) {
+			if(pwd.indexOf(":")==-1) {
 				return;
 			}
 			String num = pwd.charAt(1)+""+pwd.charAt(2);
@@ -55,6 +55,16 @@ public class AjaxDbController  {
 			lsc.setSqlPath("remiand/updateIfEating");
 			try {
 				exchangeDbServiceImpl.saveDb(lsc);
+				//通知家长
+				lsc.setSqlPath("remiand/QryFamilyUserId");
+				List<Map<String,Object>> fuList = exchangeDbServiceImpl.selectDb(lsc);
+				for(int i=0;i<fuList.size();i++) {
+					data.put("fuId",fuList.get(i).get("userId"));
+					data.put("informDesc","您的家属已按时吃药！");
+					lsc.setData(data);
+					lsc.setSqlPath("remiand/makeNotic");
+					exchangeDbServiceImpl.saveDb(lsc);
+				}
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
