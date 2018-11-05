@@ -1,5 +1,5 @@
 select
- id as Id ,
+ writing_id as writingId ,
  writing_title as title 
 from t_md_writings
 where article_type= #{type}
