@@ -1,8 +1,9 @@
 select 
 	id as Id	,
-	writing_title	as title
+	writing_title	as title,
+	unix_timestamp(now()) - unix_timestamp(update_time),
+	unix_timestamp(now()),
+	unix_timestamp(update_time)
 from t_md_writings 
-where  unix_timestamp(now())-unix_timestamp(update_time)<3600000
+where  unix_timestamp(now()) - unix_timestamp(update_time)<3600
 AND article_type=#{type};
-order by update_time desc
-limit 2

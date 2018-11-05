@@ -54,8 +54,7 @@ public class articleController extends CommonController{
 		}		
 	}
  
- 
- 
+
  @RequestMapping("/showKnowledgeTitleFirst")
  @ResponseBody
 	public JsonResult showKnowledgeTitleFirst() {
