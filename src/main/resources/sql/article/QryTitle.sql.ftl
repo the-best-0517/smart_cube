@@ -6,4 +6,4 @@ select
 	unix_timestamp(update_time)
 from t_md_writings 
 where  unix_timestamp(now()) - unix_timestamp(update_time)<3600
-AND article_type=#{type};
+AND article_type=#{type}

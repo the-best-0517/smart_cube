@@ -22,9 +22,9 @@ import cn.buu.smart_cube.common.web.JsonResult;
 
 /**
  * @ClassName: articleController
- * @Description: ндуб
+ * @Description: О©╫О©╫О©╫О©╫
  * @author: wangwei
- * @date: 2018дЙ11тб5ху ионГ10:50:36
+ * @date: 2018О©╫О©╫11О©╫О©╫5О©╫О©╫ О©╫О©╫О©╫О©╫10:50:36
  */
 @Controller
 @RequestMapping("/article")
@@ -43,6 +43,7 @@ public class articleController extends CommonController{
 		data.put("type","news");
 		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
 		LscExchangeDb db = new LscExchangeDb();
+		db.setData(data);
 		db.setSqlPath("article/QryTitleFirst");
 		try {
 			list = exchangeDbService.selectDb(db);
@@ -64,6 +65,7 @@ public class articleController extends CommonController{
 		data.put("type","knowledge");
 		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
 		LscExchangeDb db = new LscExchangeDb();
+		db.setData(data);
 		db.setSqlPath("article/QryTitleFirst");
 		try {
 			list = exchangeDbService.selectDb(db);

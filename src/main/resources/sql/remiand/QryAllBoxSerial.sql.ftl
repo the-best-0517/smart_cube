@@ -1,1 +1,1 @@
-select box_serial from t_mybox_info
+select box_serial from t_mybox_info where user_id = #{userId}

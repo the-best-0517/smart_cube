@@ -733,7 +733,7 @@ public class RemaindController extends CommonController{
 					 lsc.setSqlPath("remiand/QryAllBoxSerial");
 					 int num = 0;
 					 try {
-						 boxSerialList = exchangeDbService.selectDbNoParam(lsc);
+						 boxSerialList = exchangeDbService.selectDb(lsc);
 						 for(int p=0;p<boxSerialList.size();p++) {
 							 data.put("boxSerial", boxSerialList.get(p).get("box_serial"));
 							 lsc.setSqlPath("remiand/QryAllBoxNum");
@@ -759,8 +759,9 @@ public class RemaindController extends CommonController{
 				if(data.get("boxId")==null) {
 					//无盒可用
 					System.out.println("盒不够了");
+					data.put("boxId", 0);
 					//return;
-				}else {
+				}//else {
 				//判断时间 小于当前时间的过滤掉
 				date = new Date();
 				long nowDate = date.getTime();
@@ -777,7 +778,7 @@ public class RemaindController extends CommonController{
 				if(ret>nowDate) {
 					remiandList.add(data);
 				}
-				}
+			//	}
 			}
 			
 		}

@@ -244,7 +244,9 @@ public class LoginController extends CommonController{
 		hanldDiff();
 		Integer code = IndustrySMS.code;
 		System.out.println("code:"+code);
-		if(!email.equals(code)) {
+		System.out.println("email:"+email);
+		if(!code.equals(Integer.parseInt(email))) {
+			System.out.println("验证码错误");
 			return new JsonResult("验证码错误");
 		}
 		long userId = commonServiceImpl.getOnlyKey(); 
@@ -254,19 +256,21 @@ public class LoginController extends CommonController{
 		data.put("pwd",pwd);
 		data.put("phone",phone);
 		data.put("roleId","normal");
-		data.put("headImgPath", "file/headImg/icno.png");
+		data.put("headImgPath", "file/headImg/icon.png");
 		data.put("qrCode", "file/codeImg/123.png");
 		LscExchangeDb db = new LscExchangeDb();
 		db.setSqlPath("login/saveUser");
 		db.setData(data);
 		
 		try {
-			int rows = exchangeDbService.saveDb(db);
+			exchangeDbService.saveDb(db);
 			//保存角色信息
 			db.setSqlPath("login/saveUsertoRole");
 			exchangeDbService.saveDb(db);
 		}catch(Exception e) {
 			e.printStackTrace();
+		}finally {
+			IndustrySMS.code=(int)((Math.random()*9+1)*100000);
 		}
 		return new JsonResult();		
 	}
