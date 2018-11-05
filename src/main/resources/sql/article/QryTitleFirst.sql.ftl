@@ -3,7 +3,7 @@ select
  writing_title as title 
 from t_md_writings
 where article_type= #{type}
-order by update_time desc
+AND  unix_timestamp(now())-unix_timestamp(update_time)<43200000
 limit 5
 
 
