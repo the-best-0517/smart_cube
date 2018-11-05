@@ -7,4 +7,4 @@ select
 	 img_path as pillImgPath,
 	update_time as updateTime
 from t_md_pill
-where pill_desc like concat('%',#{key},'%')
+where pill_desc like concat('%',#{key},'%') or pill_state like concat('%',#{key},'%')

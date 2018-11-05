@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.buu.on_way.common.entity.AffMarkSMS;
 import cn.buu.on_way.common.entity.IndustrySMS;
 import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
@@ -153,11 +154,14 @@ public class LoginController extends CommonController{
 			if(d!=null&d.size()>0) {
 				//短信家人
 				System.out.println("短信家人...");
+				
 				Map<String,Object> data = new HashMap<String,Object>();
 				LscExchangeDb lsc = new LscExchangeDb();
 				lsc.setSqlPath("remiand/QryFamilyUserId");
 				List<Map<String,Object>> fuList = exchangeDbService.selectDb(lsc);
 				for(int i=0;i<fuList.size();i++) {
+				//	 AffMarkSMS.to=fuList.get(i).get("phone").toString();
+				//	 AffMarkSMS.execute();
 					data.put("fuId",fuList.get(i).get("userId"));
 					data.put("informDesc","您的家属已超过吃药提醒时间10分钟，请关注！");
 					lsc.setData(data);

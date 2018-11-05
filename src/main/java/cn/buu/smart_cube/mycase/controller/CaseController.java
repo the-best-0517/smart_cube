@@ -267,4 +267,35 @@ public class CaseController extends CommonController{
 		}		
 		
 	}
+	/**
+	 * 展示最新一条case
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/showNewCase")
+	@ResponseBody
+	public JsonResult showNewCase(HttpSession session) {
+		hanldDiff();
+		Object userId = session.getAttribute("userId");
+		Map<String,Object> data = new HashMap<String,Object>();
+		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		if(userId==null) {
+			data.put("userId",123);
+		}else {
+			data.put("userId",userId);
+		}	
+		LscExchangeDb db = new LscExchangeDb();
+		db.setData(data);
+		db.setSqlPath("mycase/QryNewCaseByUserId");
+		try {
+			list = exchangeDbService.selectDb(db);
+			System.out.println("allcase:"+list);
+			return new JsonResult(list);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new JsonResult("error");
+		}		
+		
+	}
+
 }

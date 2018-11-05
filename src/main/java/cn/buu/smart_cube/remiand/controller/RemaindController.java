@@ -664,15 +664,20 @@ public class RemaindController extends CommonController{
 			for(int k=0;k<remaindTime.size();k++) {		
 				Map<String,Object> data = new HashMap<String, Object>();
 				System.out.println("phone:"+phone);
-				if(phone.length()==11&&!phone.equals(null)&&!phone.equals("")) {
-					data.put("phone", phone);
-					//通过电话号码查询userId
-					//LscExchangeDb lsc = new LscExchangeDb();
-					lsc.setData(data);
-					lsc.setSqlPath("remiand/QryUserIdByPhone");
-					List<Map<String,Object>> l = exchangeDbService.selectDb(lsc);
-					data.put("userId",l.get(0).get("userId"));
-				}	
+				try {
+					if(!phone.equals(null)&&!phone.equals("")) {
+						data.put("phone", phone);
+						//通过电话号码查询userId
+						//LscExchangeDb lsc = new LscExchangeDb();
+						lsc.setData(data);
+						lsc.setSqlPath("remiand/QryUserIdByPhone");
+						List<Map<String,Object>> l = exchangeDbService.selectDb(lsc);
+						data.put("userId",l.get(0).get("userId"));
+					}	
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+				
 				Object userId = session.getAttribute("userId");
 				if(data.get("userId")==null) {
 					data.put("userId",userId==null?123:userId);
