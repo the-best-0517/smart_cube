@@ -40,8 +40,10 @@ public class articleController extends CommonController{
 	 System.out.println("showNewsTitle");
 	 hanldDiff();
   Map<String,Object> data = new HashMap<String,Object>();
+  data.put("type","news");
   List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
   LscExchangeDb db = new LscExchangeDb();
+  db.setData(data);
   db.setSqlPath("article/QryNewsTitle");
   try {
    list = exchangeDbService.selectDb(db);
@@ -63,7 +65,9 @@ public class articleController extends CommonController{
 		Map<String,Object> data = new HashMap<String,Object>();
 		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
 		LscExchangeDb db = new LscExchangeDb();
-		db.setSqlPath("article/QryKnowledgeTitle");
+		data.put("type","knowledge");
+		db.setData(data);
+		db.setSqlPath("article/QryNewsTitle");
 		try {
 			list = exchangeDbService.selectDb(db);
 			System.out.println("KnowledgeTitle:"+list);
