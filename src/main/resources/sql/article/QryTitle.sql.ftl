@@ -1,5 +1,5 @@
 select 
-	id as Id	,
+	writing_id as writingId	,
 	writing_title	as title,
 	unix_timestamp(now()) - unix_timestamp(update_time),
 	unix_timestamp(now()),

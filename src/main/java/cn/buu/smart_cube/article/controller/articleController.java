@@ -22,9 +22,9 @@ import cn.buu.smart_cube.common.web.JsonResult;
 
 /**
  * @ClassName: articleController
- * @Description: ����
+ * @Description: 首页新闻科普区
  * @author: wangwei
- * @date: 2018��11��5�� ����10:50:36
+ * @date: 2018年11月5日 上午10:50:36
  */
 @Controller
 @RequestMapping("/article")
@@ -122,6 +122,24 @@ public class articleController extends CommonController{
 			return new JsonResult("error");
 		}		
 	}
-	
- 	
+	@RequestMapping("/showArticleDetail")
+ 	@ResponseBody
+ 	public JsonResult showArticleDetail(int id) {
+		System.out.println("articleId:"+id);
+		System.out.println("showArticleDetail");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String,Object>();
+		data.put("articleId",id);
+		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		LscExchangeDb db = new LscExchangeDb();
+		db.setSqlPath("article/QryArticleDetail");
+		try {
+			list = exchangeDbService.selectDb(db);
+			System.out.println("KnowledgeTitle:"+list);
+			return new JsonResult(list);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new JsonResult("error");
+		}		
+	}
 }
