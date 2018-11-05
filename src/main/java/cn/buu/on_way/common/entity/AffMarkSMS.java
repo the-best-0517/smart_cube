@@ -19,9 +19,9 @@ public class AffMarkSMS
 	private static String operation = "/affMarkSMS/sendSMS";
 
 	private static String accountSid = Config.ACCOUNT_SID;
-	private static String to = "18701198791";
+	public static String to = "";
 	private static String smsContent = "【智立方】您的家属在设定的时间内未进行任何操作，已逾期10分钟，请注意及时提醒~";
-
+	
 	/**
 	 * 浼氬憳钀ラ攢鐭俊
 	 */

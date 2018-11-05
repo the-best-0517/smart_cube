@@ -16,6 +16,7 @@ public class Test
 //	 IndustrySMS.execute();
 
 		// 会员营销短信接口
+		AffMarkSMS.to="18701198791";
 		 AffMarkSMS.execute();
 
 		// 语音验证码

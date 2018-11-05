@@ -38,8 +38,15 @@ public class AjaxDbController  {
 		if(pwd.length()==0) {
 			return;
 		}
+		if(pwd.startsWith("SOS")) {
+			//发短信
+			
+		}
 		if(pwd.startsWith("C")) {
-			if(pwd.indexOf(":")==-1) {
+			System.out.println("C....");
+			System.out.println("pinse:"+pwd.indexOf(":"));
+			if(pwd.indexOf(":")!=-1) {
+				System.out.println("c:c:c:c");
 				return;
 			}
 			String num = pwd.charAt(1)+""+pwd.charAt(2);

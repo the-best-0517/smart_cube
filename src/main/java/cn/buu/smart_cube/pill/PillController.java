@@ -21,7 +21,49 @@ public class PillController extends CommonController{
 	 @Resource
 	 private ExchangeDbService exchangeDbService;
 	 
+	 @RequestMapping("/showChart")
+	 @ResponseBody
+	 public JsonResult showChart(String pillId) {
+		 System.out.println("showChart");
+		 hanldDiff();
+		 Map<String,Object> data = new HashMap<String, Object>(16);	
+		 data.put("pillId", pillId);
+		 LscExchangeDb lsc = new LscExchangeDb();
+		 lsc.setData(data);
+		 lsc.setSqlPath("pill/QryCookieBypillId");
+		 int good = 0;
+		 int common = 0;
+		 int bad = 0;
+		 try {
+			 List<Map<String,Object>> list = exchangeDbService.selectDb(lsc);
+			 for(int i=0;i<list.size();i++) {
+				if("good".equals( list.get(i).get("type"))) {
+					good = good + Integer.parseInt(list.get(i).get("assess").toString());
+				}
+				if("common".equals( list.get(i).get("type"))) {
+					common = common + Integer.parseInt(list.get(i).get("common").toString());
+				}
+				if("bad".equals( list.get(i).get("type"))) {
+					bad = bad + Integer.parseInt(list.get(i).get("common").toString());
+				}
+			 }
+			 data.put("good",good);
+			 data.put("common",common);
+			 data.put("bad",bad);
+			 list.add(data);
+			 return new JsonResult(list);	
+		 }catch(Exception e) {
+			 e.printStackTrace();
+			 return new JsonResult("error");	
+		 }
+			 
+	 }
 	 
+	 /**
+	  * 删除药品
+	  * @param pillId
+	  * @return
+	  */
 	 @RequestMapping("/deletePill")
 	 @ResponseBody
 	 public JsonResult deletePill(String pillId) {
