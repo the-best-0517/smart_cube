@@ -31,20 +31,23 @@ public class PillController extends CommonController{
 		 LscExchangeDb lsc = new LscExchangeDb();
 		 lsc.setData(data);
 		 lsc.setSqlPath("pill/QryCookieBypillId");
-		 int good = 0;
-		 int common = 0;
-		 int bad = 0;
+		 Integer good = 0;
+		 Integer common = 0;
+		 Integer bad = 0;
 		 try {
 			 List<Map<String,Object>> list = exchangeDbService.selectDb(lsc);
 			 for(int i=0;i<list.size();i++) {
 				if("good".equals( list.get(i).get("type"))) {
-					good = good + Integer.parseInt(list.get(i).get("assess").toString());
+					int g =  Integer.parseInt(list.get(i).get("assess").toString());
+					good = good + g;
 				}
 				if("common".equals( list.get(i).get("type"))) {
-					common = common + Integer.parseInt(list.get(i).get("common").toString());
+					int c = Integer.parseInt(list.get(i).get("assess").toString());
+					common = common + c;
 				}
 				if("bad".equals( list.get(i).get("type"))) {
-					bad = bad + Integer.parseInt(list.get(i).get("common").toString());
+					int b = Integer.parseInt(list.get(i).get("assess").toString());
+					bad = bad + b;
 				}
 			 }
 			 data.put("good",good);

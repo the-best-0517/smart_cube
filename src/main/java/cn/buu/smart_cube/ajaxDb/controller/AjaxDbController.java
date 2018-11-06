@@ -39,8 +39,19 @@ public class AjaxDbController  {
 			return;
 		}
 		if(pwd.startsWith("SOS")) {
-			//发短信
+			//通知家长
+			LscExchangeDb lsc = new LscExchangeDb();
+			lsc.setSqlPath("remiand/QryFamilyUserId");
+			List<Map<String,Object>> fuList = exchangeDbServiceImpl.selectDb(lsc);
+			String trueName = fuList.get(0).get("trueName").toString();
+			for(int i=0;i<fuList.size();i++) {
+				data.put("fuId",fuList.get(i).get("userId"));
+				data.put("informDesc","您的家属 "+trueName+"按下了紧急按钮！");
+				lsc.setData(data);
+				lsc.setSqlPath("remiand/makeNotic");
+				exchangeDbServiceImpl.saveDb(lsc);
 			
+		}
 		}
 		if(pwd.startsWith("C")) {
 			System.out.println("C....");
@@ -65,9 +76,23 @@ public class AjaxDbController  {
 				//通知家长
 				lsc.setSqlPath("remiand/QryFamilyUserId");
 				List<Map<String,Object>> fuList = exchangeDbServiceImpl.selectDb(lsc);
+				String trueName = fuList.get(0).get("trueName").toString();
+				lsc.setData(data);
+				lsc.setSqlPath("remiand/QryPillList");
+				List<Map<String,Object>> lastPillList = exchangeDbServiceImpl.selectDb(lsc);
+				String pillDesc = "";
+				for(int i=0;i<lastPillList.size();i++) {
+					pillDesc += lastPillList.get(i).get("pillDesc").toString();
+					if(i!=lastPillList.size()-1) {
+						pillDesc += ",";
+					}
+				}
+				System.out.println("pillDesc:"+pillDesc);
+				lsc.setSqlPath("remiand/updateIsDelete");
+				exchangeDbServiceImpl.saveDb(lsc);
 				for(int i=0;i<fuList.size();i++) {
 					data.put("fuId",fuList.get(i).get("userId"));
-					data.put("informDesc","您的家属已按时吃药！");
+					data.put("informDesc","您的家属 "+trueName+" 已按时服药！ 药品："+pillDesc);
 					lsc.setData(data);
 					lsc.setSqlPath("remiand/makeNotic");
 					exchangeDbServiceImpl.saveDb(lsc);

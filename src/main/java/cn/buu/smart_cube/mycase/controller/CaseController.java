@@ -183,10 +183,21 @@ public class CaseController extends CommonController{
 	 */
 	@RequestMapping("/saveCaseMsg")
 	@ResponseBody
-	public JsonResult saveCaseMsg(String feel,String caseId,String visitDate,String hospital,String season,HttpSession session) {
+	public JsonResult saveCaseMsg(String phone,String feel,String caseId,String visitDate,String hospital,String season,HttpSession session) {
 		hanldDiff();
 		Object userId = session.getAttribute("userId");
 		Map<String,Object> data = new HashMap<String,Object>();
+		/**通过电话判断是否本人*/
+		if(phone != null && phone.length()!= 0) {
+			data.put("phone", phone);
+			LscExchangeDb lsc = new LscExchangeDb();
+			lsc.setData(data);
+			lsc.setSqlPath("remiand/QryUserIdByPhone");
+			List<Map<String,Object>> userList = exchangeDbService.selectDb(lsc);
+			if(!userList.isEmpty()) {
+				userId = userList.get(0).get("userId");
+			}
+		}
 		data.put("visitDate", visitDate);
 		data.put("hospital", hospital);
 		data.put("season",season);
@@ -244,11 +255,23 @@ public class CaseController extends CommonController{
 	 */
 	@RequestMapping("/showAllCase")
 	@ResponseBody
-	public JsonResult showAllCase(HttpSession session) {
-		hanldDiff();
-		Object userId = session.getAttribute("userId");
+	public JsonResult showAllCase(HttpSession session,String phone) {
+		System.out.println("showAllCase");
+		hanldDiff();	
 		Map<String,Object> data = new HashMap<String,Object>();
 		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		Object userId = session.getAttribute("userId");
+		/**通过电话判断是否本人*/
+		if(phone != null && phone.length()!= 0) {
+			data.put("phone", phone);
+			LscExchangeDb lsc = new LscExchangeDb();
+			lsc.setData(data);
+			lsc.setSqlPath("remiand/QryUserIdByPhone");
+			List<Map<String,Object>> userList = exchangeDbService.selectDb(lsc);
+			if(!userList.isEmpty()) {
+				userId = userList.get(0).get("userId");
+			}
+		}	
 		if(userId==null) {
 			data.put("userId",123);
 		}else {

@@ -143,4 +143,27 @@ public class articleController extends CommonController{
 			return new JsonResult("error");
 		}		
 	}
+	
+	
+	@RequestMapping("/showNoticDetial")
+ 	@ResponseBody
+ 	public JsonResult showNoticDetial(String noticId) {
+		System.out.println("noticId:"+noticId);
+		System.out.println("showArticleDetail");
+		hanldDiff();
+		Map<String,Object> data = new HashMap<String,Object>();
+		data.put("id",noticId);
+		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		LscExchangeDb db = new LscExchangeDb();
+		db.setData(data);
+		db.setSqlPath("setting/QryNoticByNoticId");
+		try {
+			list = exchangeDbService.selectDb(db);
+			System.out.println("NoticDetial:"+list);
+			return new JsonResult(list);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new JsonResult("error");
+		}		
+	}
 }
