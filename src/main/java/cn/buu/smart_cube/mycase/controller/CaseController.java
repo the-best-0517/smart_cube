@@ -297,16 +297,31 @@ public class CaseController extends CommonController{
 	 */
 	@RequestMapping("/showNewCase")
 	@ResponseBody
-	public JsonResult showNewCase(HttpSession session) {
+	public JsonResult showNewCase(HttpSession session,String phone,String caseId) {
+		System.out.println("showNewCase");
 		hanldDiff();
 		Object userId = session.getAttribute("userId");
 		Map<String,Object> data = new HashMap<String,Object>();
+		/**通过电话判断是否本人*/
+		System.out.println("ph:"+phone);
+		if(phone!= null && phone.length()!= 0) {
+			System.out.println("jin");
+			data.put("phone", phone);
+			LscExchangeDb lsc = new LscExchangeDb();
+			lsc.setData(data);
+			lsc.setSqlPath("remiand/QryUserIdByPhone");
+			List<Map<String,Object>> userList = exchangeDbService.selectDb(lsc);
+			if(!userList.isEmpty()) {
+				userId = userList.get(0).get("userId");
+			}
+		}	
 		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
 		if(userId==null) {
 			data.put("userId",123);
 		}else {
 			data.put("userId",userId);
 		}	
+		data.put("caseId", caseId);
 		LscExchangeDb db = new LscExchangeDb();
 		db.setData(data);
 		db.setSqlPath("mycase/QryNewCaseByUserId");

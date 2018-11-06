@@ -6,4 +6,4 @@ bc.create_time as visitDate,
 ci.img_path as imgPath
 from t_md_bill_case bc
 left join t_md_case_img ci on ci.bill_case_id = bc.bill_case_id
-where bc.user_id = #{userId} and bc.bill_case_id = #{caseId}
+where bc.bill_case_id = #{caseId}
