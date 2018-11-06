@@ -124,7 +124,7 @@ public class articleController extends CommonController{
 	}
 	@RequestMapping("/showArticleDetail")
  	@ResponseBody
- 	public JsonResult showArticleDetail(int id) {
+ 	public JsonResult showArticleDetail(String id) {
 		System.out.println("articleId:"+id);
 		System.out.println("showArticleDetail");
 		hanldDiff();
@@ -132,6 +132,7 @@ public class articleController extends CommonController{
 		data.put("articleId",id);
 		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
 		LscExchangeDb db = new LscExchangeDb();
+		db.setData(data);
 		db.setSqlPath("article/QryArticleDetail");
 		try {
 			list = exchangeDbService.selectDb(db);
