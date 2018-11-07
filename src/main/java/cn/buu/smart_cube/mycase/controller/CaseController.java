@@ -31,15 +31,21 @@ public class CaseController extends CommonController{
 	@RequestMapping("/deleteImg")
 	@ResponseBody
 	public JsonResult deleteImg(String imgpath,String caseId) {
-		System.out.println("deleteImg");
+		System.out.println("deleteImg"+imgpath);
 		hanldDiff();
 		Map<String,Object> data = new HashMap<String,Object>(16);
-		data.put("imgpath", imgpath);
+		System.out.println(imgpath.substring(imgpath.indexOf("/", 3)));;
+		data.put("imgpath", imgpath.substring(imgpath.indexOf("/", 3)));
 		LscExchangeDb lsc = new LscExchangeDb();
 		lsc.setData(data);
 		lsc.setSqlPath("mycase/deleteImg");
-		exchangeDbService.deleteDb(lsc);
-		return new JsonResult();		
+		try {
+			exchangeDbService.deleteDb(lsc);
+			return new JsonResult();
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new JsonResult("error");
+		}		
 	}
 	
 	

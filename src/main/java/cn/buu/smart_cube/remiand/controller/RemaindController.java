@@ -545,10 +545,28 @@ public class RemaindController extends CommonController{
 			lsc.setSqlPath("remiand/QryPillIdByPillDesc");
 			List<Map<String,Object>> pillId = exchangeDbService.selectDb(lsc);
 			System.out.println("pill:"+pillId);
+			if(pillId.isEmpty()) {
+				System.out.println("没有此药品");
+				lsc.setData(data);
+				lsc.setSqlPath("remiand/insertCasePillNoPillId");
+				try {
+					exchangeDbService.saveDb(lsc);
+				}catch(Exception e) {
+					e.printStackTrace();
+				}finally {
+					continue;
+				}
+				
+			}
 			data.put("pillId", pillId.get(0).get("pillId"));
 			lsc.setData(data);
 			lsc.setSqlPath("remiand/replaceCasePill");
-			exchangeDbService.saveDb(lsc);
+			try {
+				exchangeDbService.saveDb(lsc);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 		
 	}
