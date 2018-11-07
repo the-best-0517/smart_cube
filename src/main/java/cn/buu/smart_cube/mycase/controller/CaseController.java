@@ -321,11 +321,18 @@ public class CaseController extends CommonController{
 		}else {
 			data.put("userId",userId);
 		}	
-		data.put("caseId", caseId);
+		System.out.println("caseId:"+caseId);
 		LscExchangeDb db = new LscExchangeDb();
-		db.setData(data);
-		db.setSqlPath("mycase/QryNewCaseByUserId");
+		if(caseId!=""&& caseId.length()!= 0) {
+			data.put("caseId", caseId);
+			db.setData(data);
+			db.setSqlPath("mycase/QryCaseByCaseId");
+		}else {
+			db.setData(data);
+			db.setSqlPath("mycase/QryNewCaseByUserId");
+		}
 		try {
+			
 			list = exchangeDbService.selectDb(db);
 			System.out.println("allcase:"+list);
 			return new JsonResult(list);

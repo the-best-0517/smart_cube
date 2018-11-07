@@ -10,7 +10,7 @@ function getMyName(){
  			if(res.data[0].roleId=="normal"){
  			//	$('#sidebar-list').find("li").eq[1].addClass("hi");
  				$('#sys').addClass("hi");
- 			}else if(res.data[0].roleId=="ad"){
+ 			}else if(res.data[0].roleId=="admin"){
  				$('#nor').addClass("hi");
  			}else{
  			//	$('#sys').addClass("hi");
