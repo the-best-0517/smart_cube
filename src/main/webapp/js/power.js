@@ -1,7 +1,7 @@
 function getMyName(){ 
  　　var url = "../login/checkRole.do";
  	$.get(url,function(res){
- 		console.log("ss:"+res.data);
+ 		console.log("ss:"+res.data[0].roleId);
  		if(res.data.length==0){
  			$('#sys').addClass("hi");
 				console.log("ok");

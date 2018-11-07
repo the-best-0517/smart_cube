@@ -48,6 +48,7 @@ public class LoginController extends CommonController{
 		hanldDiff();
 		Map<String,Object> data = new HashMap<String,Object>();
 		Object userId = session.getAttribute("userId");
+		System.out.println("userId:"+userId);
 		data.put("userId", userId==null?123:userId);
 		LscExchangeDb lsc = new LscExchangeDb();
 		lsc.setData(data);
@@ -298,6 +299,7 @@ public class LoginController extends CommonController{
 			/**ͨ��userName��ѯuserId*/
 			lsc.setSqlPath("login/QryUserIdByUserName");
 			List<Map<String,Object>> list1 = exchangeDbService.selectDb(lsc);
+			System.out.println("list1:"+list1);
 			if(list1.size()>0) {
 				Object userId = list1.get(0).get("userId");
 				session.setAttribute("userId", userId);//�󶨵�session��
