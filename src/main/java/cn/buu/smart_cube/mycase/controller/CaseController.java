@@ -34,8 +34,10 @@ public class CaseController extends CommonController{
 		System.out.println("deleteImg"+imgpath);
 		hanldDiff();
 		Map<String,Object> data = new HashMap<String,Object>(16);
-		System.out.println(imgpath.substring(imgpath.indexOf("/", 3)));;
-		data.put("imgpath", imgpath.substring(imgpath.indexOf("/", 3)));
+		System.out.println(imgpath);
+		imgpath = imgpath.replace("http://120.79.10.49:8080/smart_cube/", "");
+		System.out.println(imgpath);
+		data.put("imgpath",imgpath);
 		LscExchangeDb lsc = new LscExchangeDb();
 		lsc.setData(data);
 		lsc.setSqlPath("mycase/deleteImg");

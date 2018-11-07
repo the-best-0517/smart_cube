@@ -683,7 +683,7 @@ public class RemaindController extends CommonController{
 				Map<String,Object> data = new HashMap<String, Object>();
 				System.out.println("phone:"+phone);
 				try {
-					if(!phone.equals(null)&&!phone.equals("")) {
+					if(phone != null && phone.length()!= 0) {
 						data.put("phone", phone);
 						//通过电话号码查询userId
 						//LscExchangeDb lsc = new LscExchangeDb();
