@@ -410,13 +410,14 @@ public class RemaindController extends CommonController{
 	 */
 	@RequestMapping("/addPills")
 	@ResponseBody
-	public JsonResult addPills(String remindTime,String boxId) {
+	public JsonResult addPills(String remindTime,String boxId,HttpSession session) {
 		System.out.println("addPills");
 		hanldDiff();
 		List<Map<String,Object>> list = null;
 		Map<String,Object> data = new HashMap<String, Object>();
 		data.put("remindTime",remindTime);
 		data.put("boxId",boxId);
+		data.put("userId",session.getAttribute("userId")==null?123:session.getAttribute("userId"));
 		LscExchangeDb lsc = new LscExchangeDb();
 		lsc.setSqlPath("remiand/QryPillsByBoxId");
 		lsc.setData(data);
@@ -517,7 +518,7 @@ public class RemaindController extends CommonController{
 		/**根据药品信息生成提醒事项*/
 		System.out.println("times:"+times);
 		for(int i=0;i<Integer.parseInt(times);i++) {
-			makeRemiandBypills(l,session,phone,i);
+			makeRemiandBypills(caseId,l,session,phone,i);
 		}
 		
 		return new JsonResult();		
@@ -580,7 +581,7 @@ public class RemaindController extends CommonController{
 	 * @throws ParseException
 	 */
 	List<Map<String,Object>> remiandList = new ArrayList<Map<String, Object>>();
-	private void makeRemiandBypills(List<Map<String, String>> list,HttpSession session,String phone,int time) throws ParseException {		
+	private void makeRemiandBypills(String caseId,List<Map<String, String>> list,HttpSession session,String phone,int time) throws ParseException {		
 		for(int i=0;i<list.size();i++) {
 			/**获取一天的次数  times   每顿的个数  dose*/
 			String whereEating = list.get(i).get("whereEating");  //饭前或者饭后或者空肚
@@ -681,6 +682,7 @@ public class RemaindController extends CommonController{
 			/*未来可以有选择添加几天的*/			
 			for(int k=0;k<remaindTime.size();k++) {		
 				Map<String,Object> data = new HashMap<String, Object>();
+				data.put("caseId", caseId);
 				System.out.println("phone:"+phone);
 				try {
 					if(phone != null && phone.length()!= 0) {

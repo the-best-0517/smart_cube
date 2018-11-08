@@ -10,7 +10,8 @@ is_eating,
 is_delete,
 dose,
 create_time,
-update_time	
+update_time	,
+case_id
 	
 )values(
 #{remindId},
@@ -19,5 +20,5 @@ update_time
 #{boxId},
 #{pillDesc},
 #{remindTime},
-0,0,#{dose},now(),now()
+0,0,#{dose},now(),now(),#{caseId}
 )
