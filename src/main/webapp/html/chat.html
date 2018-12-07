@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>关于我们</title>
+		<link rel="stylesheet" type="text/css" href="../css/index.css"/>
+	</head>
+	<body>
+		       <div class="header">
+                <div class="icon">
+                    <a href="/"><img src="img/logo.png" alt=""></a>
+                </div>
+                <div class="button">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </div>
+                <div class="nav">
+                    <ul>
+                        <li>
+                            <a href="../index.html"  target="_self">首页</a>
+                        </li>
+
+                        <li>
+                            <a href="login.html">登录</a>
+                        </li>
+
+                        <li>
+                            <a href="news.html"  target="_self">新闻动态</a>
+                        </li>
+                       
+                        <li>
+                            <a href="abouts.html" class=on  target="_self">关于我们</a>
+                        </li>
+                        </ul>
+                </div>
+            </div>
+		关于我们
+	</body>
+	 <script type="text/javascript" src="../js/jquery-2.1.0.js" ></script>
+	<script>
+		$(function(){
+			var ws = new WebSocket("ws://localhost:8080/smart_cube/chat.do
+			//向服务端发送消息
+			ws.onopen = function(){
+				ws.send("hello world");
+			}
+			ws.onmessage = function(res){
+				console.log(res);
+				console.log(res.data);
+			}
+		})
+	</script>
+</html>

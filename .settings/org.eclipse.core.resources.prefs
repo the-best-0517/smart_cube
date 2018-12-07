@@ -1,2 +1,5 @@
 eclipse.preferences.version=1
-encoding/<project>=UTF-8
+encoding//src/main/java/cn/buu/smart_cube/common/service/impl/CommonServiceImpl.java=UTF-8
+encoding//src/main/resources/sql.xml=UTF-8
+encoding//src/main/webapp/jsp/common/head.jsp=UTF-8
+encoding//src/main/webapp/jsp/common/tag.jsp=UTF-8

@@ -23,18 +23,33 @@
      4).....
      -->
     <context:component-scan base-package="cn.buu" />
+	
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- 注入数据库的连接池 -->
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<!-- 配置基于注解的声明式事务默认使用注解来管理事务行为 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
 
     <!-- spring mvc 注解及类型转换 -->
     <mvc:annotation-driven conversion-service="conversionService" />
     <bean id="conversionService"
         class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
     </bean>
+    <!-- servlet-mapping映射路径：/ -->
+    <!-- 静态资源默认servlet配置
+    	1.加入对静态资源的处理：js,gif,png
+    	2.允许使用“/”做整体映射
+    	 -->
+   	<mvc:default-servlet-handler/>
+
     <!-- spring mvc 视图解析器 -->    
     <!-- 定义跳转的文件的前后缀 ，视图模式配置 -->
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <!-- 自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->
-        <property name="prefix" value="/html/" />
-        <property name="suffix" value=".html"></property>
+        <property name="prefix" value="/jsp/" />
+        <property name="suffix" value=".jsp"></property>
     </bean>  
     
     <!-- 文件上传需要配置此解析器 找类的快捷键为:ctrl+shift+t 查看本类方法：ctrl+o,假如想继续看父类方法继续ctrl+o -->

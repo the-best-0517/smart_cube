@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="cn.buu.seckill.dao.SuccessKilledDao">
+      <!-- 
+      id属性，要求唯一
+      parameterType属性：参数类型（要写类的完整名字）
+      resultType:结构类型
+       -->
+   <insert id="insertSuccessKilled">
+   		<!-- ignore 主键重复错误不会报错，而是返回0 -->
+   		insert ignore into success_killed(seckill_id,user_phone,state)
+   		values(
+   			#{seckillId},#{userPhone},'0'
+   		)
+   </insert>
+     
+     <select id="queryByIdWithSeckill" parameterType="long" resultType="cn.buu.seckill.entity.SuccessKilled">
+     	select sk.seckill_id,sk.user_phone as phone,sk.create_time,sk.state,
+     	s.seckill_id "seckill.seckill_id",
+     	s.name "seckill.name",
+     	s.number "seckill.number",
+     	s.start_time "seckill.start_time",
+     	s.end_time "seckill.end_time",
+     	s.create_time "seckill.create_time"
+     	
+     	from success_killed sk
+     	left join seckill s on s.seckill_id = sk.seckill_id
+     	where sk.seckill_id = #{seckillId} and sk.user_phone = #{userPhone}
+     </select> 
+ 
+</mapper>

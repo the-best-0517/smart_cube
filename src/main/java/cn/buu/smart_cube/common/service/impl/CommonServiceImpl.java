@@ -3,8 +3,10 @@ package cn.buu.smart_cube.common.service.impl;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Service;
 import cn.buu.on_way.common.entity.LscExchangeDb;
 import cn.buu.on_way.common.service.ExchangeDbService;
 import cn.buu.smart_cube.common.service.CommonService;
-import sun.misc.BASE64Decoder;
 @Service
 public class CommonServiceImpl implements CommonService{
 	@Resource
@@ -35,10 +36,12 @@ public class CommonServiceImpl implements CommonService{
 		if(imgStr==null) {
 			return false;
 		}
-		BASE64Decoder decoder = new BASE64Decoder();
+		//BASE64Decoder decoder = new BASE64Decoder();
+		
 		try {
 			//解密
-			byte[] b = decoder.decodeBuffer(imgStr);
+		//	byte[] b = decoder.decodeBuffer(imgStr);
+			byte[] b =new byte[1];
 			for(int i=0;i<b.length;i++) {
 				if(b[i]<0) {
 					b[i] += 256;

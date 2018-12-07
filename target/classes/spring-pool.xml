@@ -22,7 +22,6 @@
 		<property name="locations">
 			<list>
 				<value>classpath:jdbc.properties</value>
-			
 			</list>
 		</property>
    </bean>
@@ -78,5 +77,13 @@
 	<!-- jdbcTemplate   用于自定义jar包操作数据库 -->
 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
 	    <property name="dataSource" ref="dataSource"></property> 
+    </bean>
+    
+    
+    <!-- Redis -->
+    <bean id="redisDao" class="cn.buu.seckill.dao.cache.RedisDao">
+    	<constructor-arg index="0" value="${redis.ip}"/>
+    	<constructor-arg index="1" value="${redis.port}"/>
+    	<constructor-arg index="2" value="${redis.auth}"/>
     </bean>
 </beans>

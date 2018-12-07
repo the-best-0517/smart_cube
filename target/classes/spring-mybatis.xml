@@ -28,7 +28,7 @@
 
 	<!-- Mapper接口所在包，Spring会自动查找其下的Mapper -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="cn.buu.**.dao " />
+		<property name="basePackage" value="cn.buu.seckill.dao " />
 	</bean>
 
 </beans>
