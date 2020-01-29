@@ -21,7 +21,7 @@ public class CreateQRCode {
 		String content = "http://www.baidu.com";
 		
 		//定义二维码参数
-		HashMap hints = new HashMap();
+		HashMap<EncodeHintType, Comparable> hints = new HashMap();
 		hints.put(EncodeHintType.CHARACTER_SET,"utf-8");
 		hints.put(EncodeHintType.ERROR_CORRECTION,ErrorCorrectionLevel.M);
 		hints.put(EncodeHintType.MARGIN,2);                      //边框空白大小

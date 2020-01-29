@@ -15,12 +15,12 @@ public class JedisDemo1 {
 		@Test
 		public void testJedis() {
 			//1.设置IP地址和端口
-			Jedis jedis = new Jedis("120.79.10.49",6379);
-			jedis.auth("123456");
-			//2.保存数据
-			jedis.set("name","lsc1");
+			Jedis jedis = new Jedis("39.105.6.220",6379);
+			jedis.auth("twor@$Add");
+			//2.保存数据 
+			//jedis.set("BoxIndex","8");
 			//3.获取数据
-			String val = jedis.get("name");
+			String val = jedis.get("\\xAC\\xED\\x00\\x05t\\x00\\x08BoxIndex");
 			System.out.println("val:"+val);
 			//4.释放资源
 			jedis.close();

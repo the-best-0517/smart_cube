@@ -1,6 +1,11 @@
 package cn.buu.smart_cube.login.controller;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,8 +42,11 @@ public class LoginController extends CommonController{
 	@Resource
 	private CommonServiceImpl commonServiceImpl;
 	
+	
+	
+	
 	/**
-	 *获取当前登录人的角色
+	 *鑾峰彇褰撳墠鐧诲綍浜虹殑瑙掕壊
 	 * @return
 	 */
 	@RequestMapping("/checkRole")
@@ -64,7 +72,7 @@ public class LoginController extends CommonController{
 	}
 	
 	/**
-	 * 检测此手机号是否注册过
+	 * 妫�娴嬫鎵嬫満鍙锋槸鍚︽敞鍐岃繃
 	 * @param phone
 	 * @return
 	 */
@@ -93,7 +101,7 @@ public class LoginController extends CommonController{
 	
 	
 	/**
-	 * 查询buleMac 连接蓝牙用
+	 * 鏌ヨbuleMac 杩炴帴钃濈墮鐢�
 	 * @param session
 	 * @return
 	 */
@@ -124,7 +132,7 @@ public class LoginController extends CommonController{
 	}
 	
 	/**
-	 * 查询提醒时间
+	 * 鏌ヨ鎻愰啋鏃堕棿
 	 * @return
 	 * @throws IOException
 	 */	
@@ -138,7 +146,7 @@ public class LoginController extends CommonController{
 		String nowDate = sdf.format(date);
 	 	Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        //+1今天的时间加一天
+        //+1浠婂ぉ鐨勬椂闂村姞涓�澶�
         calendar.add(Calendar.MINUTE,-10);
         date = calendar.getTime();
         String before30 = sdf.format(date);
@@ -153,8 +161,8 @@ public class LoginController extends CommonController{
 			db.setSqlPath("remiand/QryIfBeforeRemaind");
 			List<Map<String, Object>> d = exchangeDbService.selectDb(db);
 			if(d!=null&d.size()>0) {
-				//短信家人
-				System.out.println("短信家人...");
+				//鐭俊瀹朵汉
+				System.out.println("鐭俊瀹朵汉...");
 				
 				Map<String,Object> data = new HashMap<String,Object>();
 				LscExchangeDb lsc = new LscExchangeDb();
@@ -164,7 +172,7 @@ public class LoginController extends CommonController{
 				//	 AffMarkSMS.to=fuList.get(i).get("phone").toString();
 				//	 AffMarkSMS.execute();
 					data.put("fuId",fuList.get(i).get("userId"));
-					data.put("informDesc","您的家属已超过吃药提醒时间10分钟，请关注！");
+					data.put("informDesc","鎮ㄧ殑瀹跺睘宸茶秴杩囧悆鑽彁閱掓椂闂�10鍒嗛挓锛岃鍏虫敞锛�");
 					lsc.setData(data);
 					lsc.setSqlPath("remiand/makeNotic");
 					exchangeDbService.saveDb(lsc);
@@ -178,9 +186,9 @@ public class LoginController extends CommonController{
 		List<String> list = new ArrayList<String>();
 		System.out.println("data:"+data);
 		if(data!=null&data.size()>0) {
-			System.out.println("不是空");
+			System.out.println("涓嶆槸绌�");
 			int bNum = Integer.parseInt(data.get(0).get("boxId").toString());
-			/**查询自己的药盒数*/
+			/**鏌ヨ鑷繁鐨勮嵂鐩掓暟*/
 			LscExchangeDb lsc = new LscExchangeDb();
 			lsc.setData(map);
 			lsc.setSqlPath("login/QryAllBoxMsg");
@@ -211,9 +219,9 @@ public class LoginController extends CommonController{
 			list.add(str);
 			list.add(data.get(0).get("boxId").toString());
 			
-			System.out.println("写通知：该吃药了");
+			System.out.println("鍐欓�氱煡锛氳鍚冭嵂浜�");
 			Map<String,Object> d = new HashMap<String,Object>();
-			d.put("informDesc","该吃药了");
+			d.put("informDesc","璇ュ悆鑽簡");
 			d.put("userId", userId==null?123:userId);
 			lsc.setData(d);
 			lsc.setSqlPath("login/makeNotic");
@@ -226,14 +234,14 @@ public class LoginController extends CommonController{
 		}				
 	}
 	/**
-	 * ��ѯ�����û���
+	 * 锟斤拷询锟斤拷锟斤拷锟矫伙拷锟斤拷
 	 * @return
 	 */
 	@RequestMapping("/logon")
 	@ResponseBody
 	public JsonResult logon() {
 		System.out.println("findAllUserNAme");
-		hanldDiff();         //��������������⣨�̳�CommController��
+		hanldDiff();         //锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷猓拷坛锟紺ommController锟斤拷
 		LscExchangeDb db = new LscExchangeDb();
 		db.setSqlPath("login/QryAllUserName");
 		List<Map<String, Object>> data = exchangeDbService.selectDb(db);
@@ -251,8 +259,8 @@ public class LoginController extends CommonController{
 		System.out.println("code:"+code);
 		System.out.println("email:"+email);
 		if(!code.equals(Integer.parseInt(email))) {
-			System.out.println("验证码错误");
-			return new JsonResult("验证码错误");
+			System.out.println("楠岃瘉鐮侀敊璇�");
+			return new JsonResult("楠岃瘉鐮侀敊璇�");
 		}
 		long userId = commonServiceImpl.getOnlyKey(); 
 		Map<String,Object> data = new HashMap<String, Object>();
@@ -269,7 +277,7 @@ public class LoginController extends CommonController{
 		
 		try {
 			exchangeDbService.saveDb(db);
-			//保存角色信息
+			//淇濆瓨瑙掕壊淇℃伅
 			db.setSqlPath("login/saveUsertoRole");
 			exchangeDbService.saveDb(db);
 		}catch(Exception e) {
@@ -296,13 +304,13 @@ public class LoginController extends CommonController{
 		}
 		Object truepwd = list.get(0).get("pwd");
 		if(pwd.equals(truepwd)) {
-			/**ͨ��userName��ѯuserId*/
+			/**通锟斤拷userName锟斤拷询userId*/
 			lsc.setSqlPath("login/QryUserIdByUserName");
 			List<Map<String,Object>> list1 = exchangeDbService.selectDb(lsc);
 			System.out.println("list1:"+list1);
 			if(list1.size()>0) {
 				Object userId = list1.get(0).get("userId");
-				session.setAttribute("userId", userId);//�󶨵�session��
+				session.setAttribute("userId", userId);//锟襟定碉拷session锟斤拷
 			}
 			return new JsonResult();
 		}else {
@@ -311,7 +319,7 @@ public class LoginController extends CommonController{
 	}
 	
 	/**
-	 * 查询个人基本信息
+	 * 鏌ヨ涓汉鍩烘湰淇℃伅
 	 * @return
 	 */
 	@RequestMapping("/showPersonMsg")
@@ -373,11 +381,84 @@ public class LoginController extends CommonController{
 		  int s =(int)(Math.random()*99+1);
 		  String path = "/www/server/apache-tomcat-default/webapps/smart_cube/file/img/"+sdf.format(date)+s+".png";
 		  System.out.println("path:"+path);
-		  commonServiceImpl.generateImage(imageBase64, path);  //解密并保存图片
+		  commonServiceImpl.generateImage(imageBase64, path);  //瑙ｅ瘑骞朵繚瀛樺浘鐗�
 		  return new JsonResult();
 	  }catch(Exception e) {
 		  e.printStackTrace();
 		  return new JsonResult("error");
 	  }
 	 }
+	 
+	 
+	 
+
+		static String JCO_CLIENT_LANG;
+		static String JCO_CLIENT_CLIENT;
+		static String JCO_CLIENT_PASSWD;
+		static String JCO_CLIENT_USER;
+		static String JCO_CLIENT_SYSNR;
+		static String JCO_CLIENT_ASHOST;
+		static String JCO_CLIENT_SAPROUTER;
+		@RequestMapping("/file")
+		public String index() throws IOException {
+			System.out.println("index");
+		//	return "redirect:index.html";
+			String cs = this.getClass().getClassLoader().getResource("") + "system.properties";
+			System.out.println("cs:"+cs);
+		//	System.out.println("cslength:"+cs.substridng(5,cs.length()));
+		//	String classPath=
+		//	"/www/server/apache-tomcat-default/webapps/smart_cube/WEB-INF/classes/system.properties"
+	//;
+			readConfig(cs.substring(6,cs.length()));
+			System.out.println("lsc:"+JCO_CLIENT_LANG);
+			return "hello world";
+			
+
+
+			
+		}
+		public void readConfig(String classPath) throws IOException {
+			System.out.println(classPath);
+			// File file = new File("C:/Users/lsc/Desktop/system.properties");
+			File file = new File(classPath);
+			FileInputStream f = null;
+			InputStreamReader isr = null;
+			BufferedReader br = null;
+			try {
+				f = new FileInputStream(file);
+				isr = new InputStreamReader(f);
+				br = new BufferedReader(isr);
+				String str = null;
+				while ((str = br.readLine()) != null) {
+					System.out.println(str);
+					if (str.startsWith("JCO")) {
+						makesap(str);
+					}
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				f.close();
+				isr.close();
+				br.close();
+			}
+		}
+		private void makesap(String str) {
+			if (str.startsWith("JCO.CLIENT.LANG")) {
+				JCO_CLIENT_LANG = str.substring(str.indexOf("=") + 1);
+			} else if (str.startsWith("JCO.CLIENT.CLIENT")) {
+				JCO_CLIENT_CLIENT = str.substring(str.indexOf("=") + 1);
+			} else if (str.startsWith("JCO.CLIENT.PASSWD")) {
+				JCO_CLIENT_PASSWD = str.substring(str.indexOf("=") + 1);
+			} else if (str.startsWith("JCO.CLIENT.USER")) {
+				JCO_CLIENT_USER = str.substring(str.indexOf("=") + 1);
+			} else if (str.startsWith("JCO.CLIENT.SYSNR")) {
+				JCO_CLIENT_SYSNR = str.substring(str.indexOf("=") + 1);
+			} else if (str.startsWith("JCO.CLIENT.ASHOST")) {
+				JCO_CLIENT_ASHOST = str.substring(str.indexOf("=") + 1);
+			} else if (str.startsWith("JCO.CLIENT.SAPROUTER")) {
+				JCO_CLIENT_SAPROUTER = str.substring(str.indexOf("=") + 1);
+			}
+		}
+
 }

@@ -47,10 +47,17 @@
             <!--头部结束-->
 <div>
 	
-	产
-品
-介
-绍
+<form name="Form1" action="/smart_cube/file/transferTo" method="post"  enctype="multipart/form-data">
+<h1>采用multipart提供的file.transfer方法上传文件</h1>
+<input type="file" name="file">
+<input type="submit" value="upload"/>
+</form>
+
+<form name="Form2" action="/smart_cube/file/request" method="post"  enctype="multipart/form-data">
+<h1>使用spring mvc提供的类的方法上传文件</h1>
+<input type="file" name="file">
+<input type="submit" value="upload"/>
+</form>
 </div>
 
 

@@ -7,6 +7,20 @@
 
    
    <dependencies>
+   <!-- JavaMail -->
+        <dependency >
+            <groupId >javax.mail </groupId >
+            <artifactId >mail </artifactId >
+            <version >1.4.5 </version >
+        </dependency >
+        <dependency >
+            <groupId >com.sun.mail </groupId >
+            <artifactId >javax.mail </artifactId >
+            <version >1.5.4 </version >
+        </dependency >
+
+   
+   
   <!--
   0. 创建maven项目,生成web.xml部署文件
   1. 添加 spring mvc 依赖 (jar)
